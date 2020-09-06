@@ -414,7 +414,7 @@ public(공용)
 
 #### 2.3.1. 클라이언트 비밀번호
 
-클라이언트 암호를 소유 한 클라이언트는 [[RFC2617](https://tools.ietf.org/html/rfc2617)]에 정의 된 HTTP 기본 인증 체계를 사용하여 권한 부여 서버로 인증 할 수 있습니다. 클라이언트 식별자는 [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)에 따라 "application / x-www-form-urlencoded"인코딩 알고리즘을 사용하여 인코딩되며 인코딩 된 값이 사용자 이름으로 사용됩니다. 클라이언트 암호는 동일한 알고리즘을 사용하여 인코딩되고 암호로 사용됩니다. 권한 부여 서버는 클라이언트 암호를 발급 한 클라이언트를 인증하기 위해 HTTP 기본 인증 체계를 지원해야합니다.
+클라이언트 암호를 소유 한 클라이언트는 [[RFC2617](https://tools.ietf.org/html/rfc2617)]에 정의 된 HTTP 기본 인증 체계를 사용하여 권한 부여 서버로 인증 할 수 있습니다. 클라이언트 식별자는 [Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)에 따라 "application / x-www-form-urlencoded"인코딩 알고리즘을 사용하여 인코딩되며 인코딩 된 값이 사용자 이름으로 사용됩니다. 클라이언트 암호는 동일한 알고리즘을 사용하여 인코딩되고 암호로 사용됩니다. 권한 부여 서버는 클라이언트 암호를 발급 한 클라이언트를 인증하기 위해 HTTP 기본 인증 체계를 지원해야합니다.
 
 예를 들어 (표시 목적으로 만 추가 줄 바꿈 포함):
 
@@ -495,7 +495,7 @@ REQUIRED. 값은 [Section 4.1.1](#411-권한-부여-요청)에 설명 된대로 
 
 자원 소유자와의 상호 작용을 완료 한 후 권한 부여 서버는 자원 소유자의 사용자 에이전트를 다시 클라이언트로 보냅니다. 권한 부여 서버는 클라이언트 등록 프로세스 중 또는 권한 부여 요청을 할 때 이전에 권한 부여 서버에 설정된 클라이언트의 리디렉션 endpoint으로 사용자 에이전트를 리디렉션합니다.
 
-리디렉션 endpoint URI는 [[RFC3986] Section 4.3](https://tools.ietf.org/html/rfc3986#section-4.3)에 정의 된대로 절대 URI 여야합니다. endpoint URI는 추가 쿼리 매개 변수를 추가 할 때 유지되어야하는 ([Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)에 따라) 쿼리 구성 요소 ([[RFC3986] Section 3.4](https://tools.ietf.org/html/rfc3986#section-3.4)) 형식의 "application/x-www-form-urlencoded"를 포함 할 수 있습니다. Endpoint URI는 fragment 요소를 포함하지 않아야합니다.
+리디렉션 endpoint URI는 [[RFC3986] Section 4.3](https://tools.ietf.org/html/rfc3986#section-4.3)에 정의 된대로 절대 URI 여야합니다. endpoint URI는 추가 쿼리 매개 변수를 추가 할 때 유지되어야하는 ([Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)에 따라) 쿼리 구성 요소 ([[RFC3986] Section 3.4](https://tools.ietf.org/html/rfc3986#section-3.4)) 형식의 "application/x-www-form-urlencoded"를 포함 할 수 있습니다. Endpoint URI는 fragment 요소를 포함하지 않아야합니다.
 
 ##### 3.1.2.1. Endpoint 요청 기밀성
 
@@ -541,7 +541,7 @@ o 암시적 부여 유형을 사용하는 기밀 클라이언트.
 
 클라이언트가 토큰 endpoint의 위치를 ​​얻는 방법은이 사양의 범위를 벗어나지 만 일반적으로 위치는 서비스 설명서에 제공됩니다.
 
-Endpoint URI는 추가 쿼리 매개 변수를 추가 할 때 유지되어야하는 ([Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)에 따라) 쿼리 구성 요소 ([[RFC3986] Section 3.4](https://tools.ietf.org/html/rfc3986#section-3.4)) 형식의 "application/x-www-form-urlencoded"를 포함 할 수 있습니다. Endpoint URI는 fragment 구성 요소를 포함하지 않아야합니다.
+Endpoint URI는 추가 쿼리 매개 변수를 추가 할 때 유지되어야하는 ([Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)에 따라) 쿼리 구성 요소 ([[RFC3986] Section 3.4](https://tools.ietf.org/html/rfc3986#section-3.4)) 형식의 "application/x-www-form-urlencoded"를 포함 할 수 있습니다. Endpoint URI는 fragment 구성 요소를 포함하지 않아야합니다.
 
 토큰 Endpoint에 대한 요청은 일반 텍스트 자격 증명 (HTTP 요청 및 응답)을 전송하므로 권한 부여 서버는 요청을 토큰 Endpoint에 보낼 때 [Section 1.6](#16-tls-version)에 설명 된대로 TLS를 사용해야합니다.
 
@@ -627,7 +627,7 @@ o 정기적 인 자격 증명 교체가 필요한 인증 관리 모범 사례를
 
 #### 4.1.1. 권한 부여 요청
 
-클라이언트는 [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 권한 부여 Endpoint URI의 쿼리 구성 요소에 다음 매개 변수를 추가하여 요청 URI를 구성합니다.
+클라이언트는 [Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 권한 부여 Endpoint URI의 쿼리 구성 요소에 다음 매개 변수를 추가하여 요청 URI를 구성합니다.
 
 response_type
 
@@ -687,7 +687,7 @@ REQUIRED. 클라이언트 권한 요청에 "state"매개 변수가있는 경우 
 
 요청이 누락, 유효하지 않거나 일치하지 않는 리디렉션 URI로 인해 실패하거나 클라이언트 식별자가 누락되거나 유효하지 않은 경우 권한 부여 서버는 리소스 소유자에게 오류를 알려야하며 사용자 에이전트를 잘못된 리디렉션 URI로 자동 리디렉션해서는 안됩니다.
 
-리소스 소유자가 액세스 요청을 거부하거나 누락되거나 잘못된 리디렉션 URI 이 외의 이유로 요청이 실패하는 경우 권한 부여 서버는 [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)의 "application/x-www-form-urlencoded"형식을 사용하여 리디렉션 URI의 쿼리 구성 요소에 다음 매개 변수를 추가하여 클라이언트에 알립니다.:
+리소스 소유자가 액세스 요청을 거부하거나 누락되거나 잘못된 리디렉션 URI 이 외의 이유로 요청이 실패하는 경우 권한 부여 서버는 [Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)의 "application/x-www-form-urlencoded"형식을 사용하여 리디렉션 URI의 쿼리 구성 요소에 다음 매개 변수를 추가하여 클라이언트에 알립니다.:
 
 error
 
@@ -743,7 +743,7 @@ REQUIRED. 클라이언트 인증 요청에 "state"매개 변수가있는 경우.
 
 #### 4.1.3. 액세스 토큰 요청
 
-클라이언트는 HTTP 요청 엔티티 본문에서 UTF-8의 문자 인코딩과 함께 [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 다음 매개 변수를 전송하여 토큰 엔드 포인트에 요청합니다.
+클라이언트는 HTTP 요청 엔티티 본문에서 UTF-8의 문자 인코딩과 함께 [Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 다음 매개 변수를 전송하여 토큰 엔드 포인트에 요청합니다.
 
 grant_type
 
@@ -874,7 +874,7 @@ o [Section 4.1.1](#411-권한-부여-요청)에 설명 된대로 "redirect_uri"�
 
 #### 4.2.1. 권한 부여 요청
 
-클라이언트는 [Appendix B](<(#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)>)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 권한 부여 Endpoint URI의 쿼리 구성 요소에 다음 매개 변수를 추가하여 요청 URI를 구성합니다.
+클라이언트는 [Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 권한 부여 Endpoint URI의 쿼리 구성 요소에 다음 매개 변수를 추가하여 요청 URI를 구성합니다.
 
 response_type
 
@@ -912,7 +912,7 @@ RECOMMENDED. 요청과 콜백 사이의 상태를 유지하기 위해 클라이�
 
 #### 4.2.2. 액세스 토큰 응답
 
-리소스 소유자가 액세스 요청을 허용하면 권한 부여 서버는 [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)의 "application/x-www-form-urlencoded"형식을 사용하여 리디렉션 URI의 fragment 구성 요소에 다음 매개 변수를 추가하여 액세스 토큰을 발급하고 클라이언트에 전달합니다.:
+리소스 소유자가 액세스 요청을 허용하면 권한 부여 서버는 [Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)의 "application/x-www-form-urlencoded"형식을 사용하여 리디렉션 URI의 fragment 구성 요소에 다음 매개 변수를 추가하여 액세스 토큰을 발급하고 클라이언트에 전달합니다.:
 
 access_token
 
@@ -950,7 +950,7 @@ state
 
 요청이 누락, 유효하지 않거나 일치하지 않는 리디렉션 URI로 인해 실패하거나 클라이언트 식별자가 누락되거나 유효하지 않은 경우 권한 부여 서버는 리소스 소유자에게 오류를 알려야하며 사용자 에이전트를 잘못된 리디렉션 URI로 자동 리디렉션해서는 안됩니다.
 
-리소스 소유자가 액세스 요청을 거부하거나 누락되거나 잘못된 리디렉션 URI 이외의 이유로 요청이 실패하는 경우 권한 부여 서버는 [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)의 "application/x-www-form-urlencoded"형식을 사용하여 리디렉션 URI의 fragment 구성 요소에 다음 매개 변수를 추가하여 클라이언트에 알립니다.:
+리소스 소유자가 액세스 요청을 거부하거나 누락되거나 잘못된 리디렉션 URI 이외의 이유로 요청이 실패하는 경우 권한 부여 서버는 [Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)의 "application/x-www-form-urlencoded"형식을 사용하여 리디렉션 URI의 fragment 구성 요소에 다음 매개 변수를 추가하여 클라이언트에 알립니다.:
 
 error
 
@@ -1043,7 +1043,7 @@ state
 
 #### 4.3.2. 액세스 토큰 요청
 
-클라이언트는 HTTP 요청 엔티티 본문에 UTF-8 문자 인코딩과 함께 [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 다음 매개 변수를 추가하여 토큰 엔드 포인트에 요청합니다.
+클라이언트는 HTTP 요청 엔티티 본문에 UTF-8 문자 인코딩과 함께 [Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 다음 매개 변수를 추가하여 토큰 엔드 포인트에 요청합니다.
 
 grant_type
 
@@ -1131,7 +1131,7 @@ o 기존 비밀번호 검증 알고리즘을 사용하여 자원 소유자 비�
 
 #### 4.4.2. 액세스 토큰 요청
 
-클라이언트는 HTTP 요청 엔티티 본문에 UTF-8 문자 인코딩과 함께 [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 다음 매개 변수를 추가하여 토큰 엔드 포인트에 요청을합니다.
+클라이언트는 HTTP 요청 엔티티 본문에 UTF-8 문자 인코딩과 함께 [Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 다음 매개 변수를 추가하여 토큰 엔드 포인트에 요청을합니다.
 
 grant_type
 
@@ -1309,7 +1309,7 @@ For example:
 
 ## 6. 액세스 토큰 새로 고침
 
-권한 부여 서버가 클라이언트에 새로 고침 토큰을 발행 한 경우 클라이언트는 HTTP 요청 엔티티 본문에 UTF-8 문자 인코딩으로 [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 다음 매개 변수를 추가하여 토큰 엔드 포인트에 새로 고침을 요청합니다.
+권한 부여 서버가 클라이언트에 새로 고침 토큰을 발행 한 경우 클라이언트는 HTTP 요청 엔티티 본문에 UTF-8 문자 인코딩으로 [Appendix B](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 다음 매개 변수를 추가하여 토큰 엔드 포인트에 새로 고침을 요청합니다.
 
 grant_type
 
