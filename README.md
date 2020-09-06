@@ -18,106 +18,131 @@ Copyright (c) 2012 IETF Trust and the persons identified as the document authors
 This document is subject to [BCP 78](https://tools.ietf.org/html/bcp78) and the IETF Trust's Legal Provisions Relating to IETF Documents(http://trustee.ietf.org/license-info) in effect on the date of publication of this document. Please review these documents carefully, as they describe your rights and restrictions with respect to this document. Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.
 
 # Table of Contents
-
-- [1. Introduction](#1-Introduction)
-  - [1.1. Roles](#11-Roles)
-  - [1.2. Protocol Flow](#12-Protocol-Flow)
-  - [1.3. Authorization Grant](#13-Authorization-Grant)
-    - [1.3.1. Authorization Code](#131-Authorization-Code)
-    - [1.3.2. Implicit](#132-Implicit)
-    - [1.3.3. Resource Owner Password Credentials](#133-Resource-Owner-Password-Credentials)
-    - [1.3.4. Client Credentials](#134-Client-Credentials)
-  - [1.4. Access Token](#14-Access-Token)
-  - [1.5. Refresh Token](#15-Refresh-Token)
-  - [1.6. TLS Version](#16-TLS-Version)
-  - [1.7. HTTP Redirections](#17-HTTP-Redirections)
-  - [1.8. Interoperability](#18-Interoperability)
-  - [1.9. Notational Conventions](#19-Notational-Conventions)
-- [2. Client Registration](#2-Client-Registration) - [2.1. Client Types](#21-Client-Types) - [2.2. Client Identifier](#22-Client-Identifier) - [2.3. Client Authentication](#23-Client-Authentication) - [2.3.1. Client Password](#231-Client-Password) - [2.3.2. Other Authentication Methods](#232-Other-Authentication-Methods) - [2.4. Unregistered Clients](#24-Unregistered-Clients)
-  [3. Protocol Endpoints](#3-Protocol-Endpoints) - [3.1. Authorization Endpoint](#31-Authorization-Endpoint) - [3.1.1.Response Type](#311-Response-Type) - [3.1.2. Redirection Endpoint](#312-Redirection-Endpoint) - [3.2. Token Endpoint](#32-Token-Endpoint) - [3.2.1. Client Authentication](#321-Client-Authentication) - [3.3. Access Token Scope](#33-Access-Token-Scope)
-- [4. Obtaining Authorization](#4-Obtaining-Authorization)
-  - [4.1. Authorization Code Grant](#41-Authorization-Code-Grant)
-    - [4.1.1. Authorization Request](#411-Authorization-Request)
-    - [4.1.2. Authorization Response](#412-Authorization-Response)
-    - [4.1.3. Access Token Request](#413-Access-Token-Request)
-    - [4.1.4. Access Token Response](#414-Access-Token-Response)
-  - [4.2. Implicit Grant](#42-Implicit-Grant)
-    - [4.2.1. Authorization Request](#421-Authorization-Request)
-    - [4.2.2. Access Token Response](#422-Access-Token-Response)
-  - [4.3. Resource Owner Password Credentials Grant](#43-Resource-Owner-Password-Credentials-Grant)
-    - [4.3.1. Authorization Request and Response](#431-Authorization-Request-and-Response)
-    - [4.3.2. Access Token Request](#432-Access-Token-Request)
-    - [4.3.3. Access Token Response](#433-Access-Token-Response)
-  - [4.4. Client Credentials Grant](#44-Client-Credentials-Grant)
-    - [4.4.1. Authorization Request and Response](#441-Authorization-Request-and-Response)
-    - [4.4.2. Access Token Request](#442-Access-Token-Request)
-    - [4.4.3. Access Token Response](#443-Access-Token-Response)
-  - [4.5. Extension Grants](#45-Extension-Grants)
-- [5. Issuing an Access Token](#5-Issuing-an-Access-Token)
-  - [5.1. Successful Response](#51-Successful-Response)
-  - [5.2. Error Response](#52-Error-Response)
-- [6. Refreshing an Access Token](#6-Refreshing-an-Access-Token)
-- [7. Accessing Protected Resources](#7-Accessing-Protected-Resources)
-  - [7.1. Access Token Types](#71-Access-Token-Types)
-  - [7.2. Error Response](#72-Error-Response)
-- [8. Extensibility](#8-Extensibility)
-  - [8.1. Defining Access Token Types](#81-Defining-Access-Token-Types)
-  - [8.2. Defining New Endpoint Parameters](#82-Defining-New-Endpoint-Parameters)
-  - [8.3. Defining New Authorization Grant Types](#83-Defining-New-Authorization-Grant-Types)
-  - [8.4. Defining New Authorization Endpoint Response Types](#84-Defining-New-Authorization-Endpoint-Response-Types)
-  - [8.5. Defining Additional Error Codes](#85-Defining-Additional-Error-Codes)
-- [9. Native Applications](#9-Native-Applications)
-- [10. Security Considerations](#10-Security-Considerations)
-  - [10.1. Client Authentication](#101-Client-Authentication)
-  - [10.2. Client Impersonation](#102-Client-Impersonation)
-  - [10.3. Access Tokens](#103-Access-Tokens)
-  - [10.4. Refresh Tokens](#104-Refresh-Tokens)
-  - [10.5. Authorization Codes](#105-Authorization-Codes)
-  - [10.6. Authorization Code Redirection URI Manipulation](#106-Authorization-Code-Redirection-URI-Manipulation)
-  - [10.7. Resource Owner Password Credentials](#107-Resource-Owner-Password-Credentials)
-  - [10.8. Request Confidentiality](#108-Request-Confidentiality)
-  - [10.9. Ensuring Endpoint Authenticity](#109-Ensuring-Endpoint-Authenticity)
-  - [10.10. Credentials-Guessing Attacks](#1010-Credentials-Guessing-Attacks)
-  - [10.11. Phishing Attacks](#1011-Phishing-Attacks)
-  - [10.12. Cross-Site Request Forgery](#1012-Cross-Site-Request-Forgery)
-  - [10.13. Clickjacking](#1013-Clickjacking)
-  - [10.14. Code Injection and Input Validation](#1014-Code-Injection-and-Input-Validation)
-  - [10.15. Open Redirectors](#1015-Open-Redirectors)
-  - [10.16. Misuse of Access Token to Impersonate Resource Owner in Implicit Flow](#1016-Misuse-of-Access-Token-to-Impersonate-Resource-Owner-in-Implicit-Flow)
-- [11. IANA Considerations](#11-IANA-Considerations)
-  - [11.1. OAuth Access Token Types Registry](#111-OAuth-Access-Token-Types-Registry)
-    - [11.1.1. Registration Template](#1111-Registration-Template)
-  - [11.2. OAuth Parameters Registry](#112-OAuth-Parameters-Registry)
-    - [11.2.1. Registration Template](#1121-Registration-Template)
-    - [11.2.2. Initial Registry Contents ](#1122-Initial-Registry-Contents)
-  - [11.3. OAuth Authorization Endpoint Response Types Registry](#113-OAuth-Authorization-Endpoint-Response-Types-Registry)
-    - [11.3.1. Registration Template](#1131-Registration-Template)
-    - [11.3.2. Initial Registry Contents](#1132-Initial-Registry-Contents)
-  - [11.4. OAuth Extensions Error Registry](#114-OAuth-Extensions-Error-Registry)
-    - [11.4.1. Registration Template](#1141-Registration-Template)
-- [12. References](#12-References)
-  - [12.1. Normative References](#121-Normative-References)
-  - [12.2. Informative References](#122-Informative-References)
-- [Appendix A. Augmented Backus-Naur Form (ABNF) Syntax](#Appendix-A-Augmented-Backus-Naur-Form-ABNF-Syntax)
-  - [A.1. "client_id" Syntax](#A1-client_id-Syntax)
-  - [A.2. "client_secret" Syntax](#A2-client_secret-Syntax)
-  - [A.3. "response_type" Syntax](#A3-response_type-Syntax)
-  - [A.4. "scope" Syntax](#A4-scope-Syntax)
-  - [A.5. "state" Syntax](#A5-state-Syntax)
-  - [A.6. "redirect_uri" Syntax](#A6-redirect_uri-Syntax)
-  - [A.7. "error" Syntax](#A7-error-Syntax)
-  - [A.8. "error_description" Syntax](#A8-error_description-Syntax)
-  - [A.9. "error_uri" Syntax](#A9-error_uri-Syntax)
-  - [A.10. "grant_type" Syntax](#A10-grant_type-Syntax)
-  - [A.11. "code" Syntax](#A11-code-Syntax)
-  - [A.12. "access_token" Syntax](#A12-access_token-Syntax)
-  - [A.13. "token_type" Syntax](#A13-token_type-Syntax)
-  - [A.14. "expires_in" Syntax](#A14-expires_in-Syntax)
-  - [A.15. "username" Syntax](#A15-username-Syntax)
-  - [A.16. "password" Syntax](#A16-password-Syntax)
-  - [A.17. "refresh_token" Syntax](#A17-refresh_token-Syntax)
-  - [A.18. Endpoint Parameter Syntax](#A18-Endpoint-Parameter-Syntax)
-- [Appendix B. Use of application/x-www-form-urlencoded Media Type](#Appendix-B-Use-of-applicationx-www-form-urlencoded-Media-Type)
+- [RFC6749](#rfc6749)
+- [The OAuth 2.0 Authorization Framework](#the-oauth-20-authorization-framework)
+  - [Abstract](#abstract)
+  - [Status of This Memo](#status-of-this-memo)
+  - [Copyright Notice](#copyright-notice)
+- [Table of Contents](#table-of-contents)
+  - [1. Introduction](#1-introduction)
+    - [1.1 Roles](#11-roles)
+    - [1.2 Protocol Flow](#12-protocol-flow)
+    - [1.3 권한 부여](#13-권한-부여)
+      - [1.3.1. 권한 부여 코드](#131-권한-부여-코드)
+      - [1.3.2. 암시적](#132-암시적)
+      - [1.3.3. 리소스 소유자 암호 자격 증명](#133-리소스-소유자-암호-자격-증명)
+      - [1.3.4. 클라이언트 자격 증명](#134-클라이언트-자격-증명)
+    - [1.4. 액세스 토큰](#14-액세스-토큰)
+    - [1.5. 새로 고침 토큰](#15-새로-고침-토큰)
+    - [1.6. TLS Version](#16-tls-version)
+    - [1.7. HTTP Redirections](#17-http-redirections)
+    - [1.8. 상호 운용성](#18-상호-운용성)
+    - [1.9. Notational Conventions](#19-notational-conventions)
+  - [2. 클라이언트 등록](#2-클라이언트-등록)
+    - [2.1. 클라이언트 유형](#21-클라이언트-유형)
+    - [2.2. 클라이언트 식별](#22-클라이언트-식별)
+    - [2.3. 클라이언트 인증](#23-클라이언트-인증)
+      - [2.3.1. 클라이언트 비밀번호](#231-클라이언트-비밀번호)
+      - [2.3.2. 기타 인증 방법](#232-기타-인증-방법)
+    - [2.4. 등록되지 않은 클라이언트](#24-등록되지-않은-클라이언트)
+  - [3. Protocol Endpoints](#3-protocol-endpoints)
+    - [3.1. 권한 부여 Endpoint](#31-권한-부여-endpoint)
+      - [3.1.1. 응답 유형](#311-응답-유형)
+      - [3.1.2. 리디렉션 Endpoint](#312-리디렉션-endpoint)
+        - [3.1.2.1. Endpoint 요청 기밀성](#3121-endpoint-요청-기밀성)
+        - [3.1.2.2. 등록 요건](#3122-등록-요건)
+        - [3.1.2.3. 동적 구성](#3123-동적-구성)
+        - [3.1.2.4. 무효한 Endpoint](#3124-무효한-endpoint)
+        - [3.1.2.5. Endpoint 콘텐츠](#3125-endpoint-콘텐츠)
+    - [3.2. 토큰 Endpoint](#32-토큰-endpoint)
+      - [3.2.1. 클라이언트 인증](#321-클라이언트-인증)
+    - [3.3. 액세스 토큰 범위](#33-액세스-토큰-범위)
+  - [4. 권한 부여 받기](#4-권한-부여-받기)
+    - [4.1. 인증 코드 부여](#41-인증-코드-부여)
+      - [4.1.1. 권한 부여 요청](#411-권한-부여-요청)
+      - [4.1.2. 권한 부여 응답](#412-권한-부여-응답)
+        - [4.1.2.1. 오류 응답](#4121-오류-응답)
+      - [4.1.3. 액세스 토큰 요청](#413-액세스-토큰-요청)
+      - [4.1.4. 액세스 토큰 응답](#414-액세스-토큰-응답)
+    - [4.2. 암시 적 부여](#42-암시-적-부여)
+      - [4.2.1. 권한 부여 요청](#421-권한-부여-요청)
+      - [4.2.2. 액세스 토큰 응답](#422-액세스-토큰-응답)
+        - [4.2.2.1. 오류 응답](#4221-오류-응답)
+    - [4.3. 리소스 소유자 암호 자격 증명 부여](#43-리소스-소유자-암호-자격-증명-부여)
+      - [4.3.1. 권한 부여 요청 및 응답](#431-권한-부여-요청-및-응답)
+      - [4.3.2. 액세스 토큰 요청](#432-액세스-토큰-요청)
+      - [4.3.3. 액세스 토큰 응답](#433-액세스-토큰-응답)
+    - [4.4. 클라이언트 자격 증명 부여](#44-클라이언트-자격-증명-부여)
+    - [4.4. Client Credentials Grant](#44-client-credentials-grant)
+      - [4.4.1. 권한 부여 요청 및 응답](#441-권한-부여-요청-및-응답)
+      - [4.4.2. 액세스 토큰 요청](#442-액세스-토큰-요청)
+      - [4.4.3. 액세스 토큰 응답](#443-액세스-토큰-응답)
+    - [4.5. Extension Grants](#45-extension-grants)
+  - [5. 액세스 토큰 발급](#5-액세스-토큰-발급)
+    - [5.1. 성공적인 응답](#51-성공적인-응답)
+    - [5.2. 오류 응답](#52-오류-응답)
+  - [6. 액세스 토큰 새로 고침](#6-액세스-토큰-새로-고침)
+  - [7. 보호 된 리소스에 액세스](#7-보호-된-리소스에-액세스)
+    - [7.1. 액세스 토큰 유형](#71-액세스-토큰-유형)
+    - [7.2. 오류 응답](#72-오류-응답)
+  - [8. 확장성](#8-확장성)
+    - [8.1. 액세스 토큰 유형 정의](#81-액세스-토큰-유형-정의)
+    - [8.2. 새 Endpoint 매개 변수 정의](#82-새-endpoint-매개-변수-정의)
+    - [8.3. 새 권한 부여 유형 정의](#83-새-권한-부여-유형-정의)
+    - [8.4. 새 권한 부여 Endpoint 응답 유형 정의](#84-새-권한-부여-endpoint-응답-유형-정의)
+    - [8.5. 추가 오류 코드 정의](#85-추가-오류-코드-정의)
+  - [9. 네이티브 애플리케이션](#9-네이티브-애플리케이션)
+  - [10. 보안 고려 사항](#10-보안-고려-사항)
+    - [10.1. 클라이언트 인증](#101-클라이언트-인증)
+    - [10.2. 클라이언트 가장](#102-클라이언트-가장)
+    - [10.3. 액세스 토큰](#103-액세스-토큰)
+    - [10.4. 새로 고침 토큰](#104-새로-고침-토큰)
+    - [10.5. 권한 부여 코드](#105-권한-부여-코드)
+    - [10.6. 권한 부여 코드 리디렉션 URI 조작](#106-권한-부여-코드-리디렉션-uri-조작)
+    - [10.7. 리소스 소유자 암호 자격 증명](#107-리소스-소유자-암호-자격-증명)
+    - [10.8. 기밀성 요청](#108-기밀성-요청)
+    - [10.9. 엔드 포인트 신뢰성 보장](#109-엔드-포인트-신뢰성-보장)
+    - [10.10. 자격 증명 추측 공격](#1010-자격-증명-추측-공격)
+    - [10.11. 피싱 공격](#1011-피싱-공격)
+    - [10.12. 교차 사이트 요청 위조](#1012-교차-사이트-요청-위조)
+    - [10.13. Clickjacking](#1013-clickjacking)
+    - [10.14. 코드 삽입 및 입력 유효성 검사](#1014-코드-삽입-및-입력-유효성-검사)
+    - [10.15. 리디렉터 열기](#1015-리디렉터-열기)
+    - [10.16. 암시적 흐름에서 리소스 소유자로 가장하기위한 액세스 토큰의 오용](#1016-암시적-흐름에서-리소스-소유자로-가장하기위한-액세스-토큰의-오용)
+  - [11. IANA Considerations](#11-iana-considerations)
+    - [11.1. OAuth Access Token Types Registry](#111-oauth-access-token-types-registry)
+      - [11.1.1. Registration Template](#1111-registration-template)
+    - [11.2. OAuth Parameters Registry](#112-oauth-parameters-registry)
+      - [11.2.1. Registration Template](#1121-registration-template)
+      - [11.2.2. Initial Registry Contents](#1122-initial-registry-contents)
+    - [11.3. OAuth Authorization Endpoint Response Types Registry](#113-oauth-authorization-endpoint-response-types-registry)
+      - [11.3.1. Registration Template](#1131-registration-template)
+      - [11.3.2. Initial Registry Contents](#1132-initial-registry-contents)
+    - [11.4. OAuth Extensions Error Registry](#114-oauth-extensions-error-registry)
+      - [11.4.1. Registration Template](#1141-registration-template)
+  - [12. References](#12-references)
+    - [12.1. Normative References](#121-normative-references)
+    - [12.2. Informative References](#122-informative-references)
+- [Appendix A. Augmented Backus-Naur Form (ABNF) Syntax](#appendix-a-augmented-backus-naur-form-abnf-syntax)
+  - [A.1. "client_id" Syntax](#a1-client_id-syntax)
+  - [A.2. "client_secret" Syntax](#a2-client_secret-syntax)
+  - [A.3. "response_type" Syntax](#a3-response_type-syntax)
+  - [A.4. "scope" Syntax](#a4-scope-syntax)
+  - [A.5. "state" Syntax](#a5-state-syntax)
+  - [A.6. "redirect_uri" Syntax](#a6-redirect_uri-syntax)
+  - [A.7. "error" Syntax](#a7-error-syntax)
+  - [A.8. "error_description" Syntax](#a8-error_description-syntax)
+  - [A.9. "error_uri" Syntax](#a9-error_uri-syntax)
+  - [A.10. "grant_type" Syntax](#a10-grant_type-syntax)
+  - [A.11. "code" Syntax](#a11-code-syntax)
+  - [A.12. "access_token" Syntax](#a12-access_token-syntax)
+  - [A.13. "token_type" Syntax](#a13-token_type-syntax)
+  - [A.14. "expires_in" Syntax](#a14-expires_in-syntax)
+  - [A.15. "username" Syntax](#a15-username-syntax)
+  - [A.16. "password" Syntax](#a16-password-syntax)
+  - [A.17. "refresh_token" Syntax](#a17-refresh_token-syntax)
+  - [A.18. Endpoint Parameter Syntax](#a18-endpoint-parameter-syntax)
+- [Appendix B. Use of application/x-www-form-urlencoded Media Type](#appendix-b-use-of-applicationx-www-form-urlencoded-media-type)
 
 ## 1. Introduction
 
@@ -201,7 +226,7 @@ OAuth는 네 가지 역할을 정의합니다.:
 
 (F) 리소스 서버는 액세스 토큰의 유효성을 검사하고 유효한 경우 요청을 처리합니다.
 
-클라이언트가 리소스 소유자 (단계 (A) 및 (B)에 설명 됨)로부터 권한 부여를 얻기 위해 선호되는 방법은 권한 부여 서버를 중개자로 사용하는 것입니다. 이는 [Section 4.1](#41-Authorization-Code-Grant)의 그림 3에 설명되어 있습니다.
+클라이언트가 리소스 소유자 (단계 (A) 및 (B)에 설명 됨)로부터 권한 부여를 얻기 위해 선호되는 방법은 권한 부여 서버를 중개자로 사용하는 것입니다. 이는 [Section 4.1](#41-인증-코드-부여)의 그림 3에 설명되어 있습니다.
 
 ### 1.3 권한 부여
 
@@ -221,7 +246,7 @@ OAuth는 네 가지 역할을 정의합니다.:
 
 암시적 허용 흐름 중에 액세스 토큰을 발행 할 때 권한 부여 서버는 클라이언트를 인증하지 않습니다. 경우에 따라 클라이언트에 액세스 토큰을 전달하는 데 사용되는 리디렉션 URI를 통해 클라이언트 정체를 확인할 수 있습니다. 액세스 토큰은 리소스 소유자 또는 리소스 소유자의 사용자 에이전트에 대한 액세스 권한이있는 다른 애플리케이션에 노출 될 수 있습니다.
 
-암시적 권한 부여는 액세스 토큰을 얻는 데 필요한 왕복 횟수를 줄이므로 일부 클라이언트 (예 : 브라우저 내 애플리케이션으로 구현 된 클라이언트)의 응답 성과 효율성을 향상시킵니다. 그러나 이러한 편의는 특히 권한 부여 코드 부여 유형을 사용할 수있는 경우 섹션 [10.3](#103-Access-Tokens) 및 [10.16](#1016-Misuse-of-Access-Token-to-Impersonate-Resource-Owner-in-Implicit-Flow)에 설명 된 것과 같은 암시적 부여 사용의 보안에 대해 생각해보아야 합니다.
+암시적 권한 부여는 액세스 토큰을 얻는 데 필요한 왕복 횟수를 줄이므로 일부 클라이언트 (예 : 브라우저 내 애플리케이션으로 구현 된 클라이언트)의 응답 성과 효율성을 향상시킵니다. 그러나 이러한 편의는 특히 권한 부여 코드 부여 유형을 사용할 수있는 경우 [Section 10.3](#103-액세스-토큰) 및 [Section 10.16](#1016-암시적-흐름에서-리소스-소유자로-가장하기위한-액세스-토큰의-오용)에 설명 된 것과 같은 암시적 부여 사용의 보안에 대해 생각해보아야 합니다.
 
 #### 1.3.3. 리소스 소유자 암호 자격 증명
 
@@ -289,7 +314,7 @@ OAuth는 네 가지 역할을 정의합니다.:
 
 (H) 권한 부여 서버는 클라이언트를 인증하고 새로 고침 토큰의 유효성을 검사하고 유효한 경우 새 액세스 토큰 (및 선택적으로 새 새로 고침 토큰)을 발급합니다.
 
-단계 (C), (D), (E) 및 (F)는 [Section 7](#7-Accessing-Protected-Resources)에 설명 된대로이 사양의 범위를 벗어납니다.
+단계 (C), (D), (E) 및 (F)는 [Section 7](#7-보호-된-리소스에-액세스)에 설명 된대로이 사양의 범위를 벗어납니다.
 
 ### 1.6. TLS Version
 
@@ -335,9 +360,9 @@ are case sensitive.
 
 클라이언트 등록에는 클라이언트와 권한 부여 서버 간의 직접적인 상호 작용이 필요하지 않습니다. 권한 부여 서버에서 지원하는 경우 등록은 클라이언트와 신뢰를 설정하고 필요한 클라이언트 속성 (예 : 리디렉션 URI, 클라이언트 유형)을 얻기위한 다른 수단에 의존 할 수 있습니다. 예를 들어, 등록은 자체 발행 또는 제 3 자 발행을 사용하거나 신뢰할 수있는 채널을 사용하여 클라이언트 발견을 수행하는 권한 부여 서버에 의해 수행 될 수 있습니다. 클라이언트를 등록 할 때 클라이언트 개발자는 다음을 해야한다.(SHALL):
 
-o [Section 2.1](#21-Client-Types)에 설명 된대로 클라이언트 유형을 지정합니다.
+o [Section 2.1](#21-클라이언트-유형)에 설명 된대로 클라이언트 유형을 지정합니다.
 
-o [Section 3.1.2](#312-Redirection-Endpoint)에 설명 된대로 클라이언트 리디렉션 URI를 제공합니다.
+o [Section 3.1.2](#312-리디렉션-endpoint)에 설명 된대로 클라이언트 리디렉션 URI를 제공합니다.
 
 o 권한 부여 서버에 필요한 기타 정보 (예 : 애플리케이션 이름, 웹 사이트, 설명, 로고 이미지, 법적 조건 수락)를 포함합니다.
 
@@ -399,7 +424,7 @@ public(공용)
 
 client_id
 
-REQUIRED. [Section 2.2](#22-Client-Identifier)에 설명 된 등록 프로세스 중에 클라이언트에게 발급 된 클라이언트 식별자.
+REQUIRED. [Section 2.2](#22-클라이언트-식별)에 설명 된 등록 프로세스 중에 클라이언트에게 발급 된 클라이언트 식별자.
 
 client_secret
 
@@ -407,7 +432,7 @@ REQUIRED. 클라이언트 시크릿. 클라이언트 시크릿이 빈 문자열 
 
 두 매개 변수를 사용하여 요청 본문에 클라이언트 자격 증명을 포함하는 것은 권장되지 않으며 HTTP 기본 인증 체계 (또는 기타 암호 기반 HTTP 인증 체계)를 직접 사용할 수없는 클라이언트로 제한되어야합니다. 매개 변수는 요청 본문에서만 전송 될 수 있으며 요청 URI에 포함되지 않아야합니다.
 
-예를 들어 본문 매개 변수를 사용하여 액세스 토큰 ([Section 6](#6-Refreshing-an-Access-Token))을 새로 고치는 요청 (표시 목적으로 만 추가 줄 바꿈 포함):
+예를 들어 본문 매개 변수를 사용하여 액세스 토큰 ([Section 6](#6-액세스-토큰-새로-고침))을 새로 고치는 요청 (표시 목적으로 만 추가 줄 바꿈 포함):
 
      POST /token HTTP/1.1
      Host: server.example.com
@@ -416,7 +441,7 @@ REQUIRED. 클라이언트 시크릿. 클라이언트 시크릿이 빈 문자열 
      grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA
      &client_id=s6BhdRkqt3&client_secret=7Fjfp0ZBr1KtDRbnfVdmIw
 
-권한 부여 서버는 암호 인증을 사용하여 요청을 보낼 때 [Section 1.6](#16-TLS-Version)에 설명 된대로 TLS를 사용해야합니다.
+권한 부여 서버는 암호 인증을 사용하여 요청을 보낼 때 [Section 1.6](#16-tls-version)에 설명 된대로 TLS를 사용해야합니다.
 
 이 클라이언트 인증 방법에는 암호가 포함되므로 권한 부여 서버는 무차별 대입 공격으로부터 암호를 사용하는 모든 엔드 포인트를 보호해야합니다.
 
@@ -460,11 +485,11 @@ endpoint URI는 추가 쿼리 매개 변수를 추가 할 때 유지되어야하
 
 response_type
 
-REQUIRED. 값은 [Section 4.1.1](#411-Authorization-Request)에 설명 된대로 권한 부여 코드를 요청하기위한 "code", [Section 4.2.1](#421-Authorization-Request)에 설명 된 액세스 토큰 (암시적 허용)을 요청하기위한 "token"또는 [Section 8.4](#8..Defining-New-Authorization-Endpoint-Response-Types)에 설명 된 등록 된 확장 값 중 하나 여야합니다.
+REQUIRED. 값은 [Section 4.1.1](#411-권한-부여-요청)에 설명 된대로 권한 부여 코드를 요청하기위한 "code", [Section 4.2.1](#421-권한-부여-요청)에 설명 된 액세스 토큰 (암시적 허용)을 요청하기위한 "token"또는 [Section 8.4](#84-새-권한-부여-endpoint-응답-유형-정의)에 설명 된 등록 된 확장 값 중 하나 여야합니다.
 
 확장 응답 유형은 값의 순서가 중요하지 않은 공백으로 구분 된 (%x20) 값 목록을 포함 할 수 있습니다 (예 : 응답 유형 "a b"는 "b a"와 동일 함). 이러한 복합 응답 유형의 의미는 해당 사양에 의해 정의됩니다.
 
-인증 요청에 "response_type"매개 변수가 없거나 응답 유형이 이해되지 않는 경우 권한 부여 서버는 [Section 4.1.2.1](#4.1.2.1.-Error-Response)에 설명 된대로 오류 응답을 반환해야합니다.
+인증 요청에 "response_type"매개 변수가 없거나 응답 유형이 이해되지 않는 경우 권한 부여 서버는 [Section 4.1.2.1](#4121-오류-응답)에 설명 된대로 오류 응답을 반환해야합니다.
 
 #### 3.1.2. 리디렉션 Endpoint
 
@@ -474,7 +499,7 @@ REQUIRED. 값은 [Section 4.1.1](#411-Authorization-Request)에 설명 된대로
 
 ##### 3.1.2.1. Endpoint 요청 기밀성
 
-리디렉션 endpoint는 요청 된 응답 유형이 "code"또는 "token"이거나 리디렉션 요청이 개방형 네트워크를 통해 민감한 자격 증명을 전송하게 될 때 [Section 1.6](#16-TLS-Version)에 설명 된대로 TLS를 사용해야합니다 (SHOULD). 이 문서를 작성할 당시 클라이언트에게 TLS를 배포하도록 요구하는 것은 많은 클라이언트 개발자에게 중요한 장애물이기 때문에이 사양은 TLS 사용을 의무화하지 않습니다. TLS를 사용할 수없는 경우 권한 부여 서버는 리디렉션 전에 안전하지 않은 endpoint에 대해 리소스 소유자에게 경고해야합니다 (예 : 권한 부여 요청 중에 메시지 표시).
+리디렉션 endpoint는 요청 된 응답 유형이 "code"또는 "token"이거나 리디렉션 요청이 개방형 네트워크를 통해 민감한 자격 증명을 전송하게 될 때 [Section 1.6](#16-tls-version)에 설명 된대로 TLS를 사용해야합니다 (SHOULD). 이 문서를 작성할 당시 클라이언트에게 TLS를 배포하도록 요구하는 것은 많은 클라이언트 개발자에게 중요한 장애물이기 때문에이 사양은 TLS 사용을 의무화하지 않습니다. TLS를 사용할 수없는 경우 권한 부여 서버는 리디렉션 전에 안전하지 않은 endpoint에 대해 리소스 소유자에게 경고해야합니다 (예 : 권한 부여 요청 중에 메시지 표시).
 
 전송 계층 보안이 부족하면 클라이언트 및 액세스 권한이있는 보호 된 리소스의 보안에 심각한 영향을 미칠 수 있습니다. 전송 계층 보안의 사용은 권한 부여 프로세스가 클라이언트에 의해 위임 된 최종 사용자 인증의 한 형태로 사용될 때 특히 중요합니다 (예 : 타사 로그인 서비스).
 
@@ -492,7 +517,7 @@ o 암시적 부여 유형을 사용하는 기밀 클라이언트.
 
 권한 부여 서버는 클라이언트가 여러 리디렉션 Endpoint을 등록하도록 허용 할 수 있습니다.
 
-리디렉션 URI 등록 요구 사항이 없으면 공격자가 [Section 10.15](#1015-Open-Redirectors)에 설명 된대로 권한 부여 endpoint을 개방형 리디렉터로 사용할 수 있습니다.
+리디렉션 URI 등록 요구 사항이 없으면 공격자가 [Section 10.15](#1015-리디렉터-열기)에 설명 된대로 권한 부여 endpoint을 개방형 리디렉터로 사용할 수 있습니다.
 
 ##### 3.1.2.3. 동적 구성
 
@@ -518,7 +543,7 @@ o 암시적 부여 유형을 사용하는 기밀 클라이언트.
 
 Endpoint URI는 추가 쿼리 매개 변수를 추가 할 때 유지되어야하는 ([Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)에 따라) 쿼리 구성 요소 ([[RFC3986] Section 3.4](https://tools.ietf.org/html/rfc3986#section-3.4)) 형식의 "application/x-www-form-urlencoded"를 포함 할 수 있습니다. Endpoint URI는 fragment 구성 요소를 포함하지 않아야합니다.
 
-토큰 Endpoint에 대한 요청은 일반 텍스트 자격 증명 (HTTP 요청 및 응답)을 전송하므로 권한 부여 서버는 요청을 토큰 Endpoint에 보낼 때 [Section 1.6](#16-TLS-Version)에 설명 된대로 TLS를 사용해야합니다.
+토큰 Endpoint에 대한 요청은 일반 텍스트 자격 증명 (HTTP 요청 및 응답)을 전송하므로 권한 부여 서버는 요청을 토큰 Endpoint에 보낼 때 [Section 1.6](#16-tls-version)에 설명 된대로 TLS를 사용해야합니다.
 
 클라이언트는 액세스 토큰 요청을 할 때 반드시 HTTP "POST"메소드를 사용해야합니다.
 
@@ -526,7 +551,7 @@ Endpoint URI는 추가 쿼리 매개 변수를 추가 할 때 유지되어야하
 
 #### 3.2.1. 클라이언트 인증
 
-기밀 클라이언트 또는 기타 클라이언트가 발급 한 클라이언트 자격 증명은 토큰 엔드 포인트에 요청할 때 [Section 2.3](#23-Client-Authentication) 절에 설명 된대로 인증 서버로 인증해야합니다. 클라이언트 인증은 다음에 사용됩니다.:
+기밀 클라이언트 또는 기타 클라이언트가 발급 한 클라이언트 자격 증명은 토큰 엔드 포인트에 요청할 때 [Section 2.3](#23-클라이언트-인증) 절에 설명 된대로 인증 서버로 인증해야합니다. 클라이언트 인증은 다음에 사용됩니다.:
 
 o 발급 된 클라이언트에 대한 새로 고침 토큰 및 권한 부여 코드의 바인딩을 적용합니다. 클라이언트 인증은 인증 코드가 안전하지 않은 채널을 통해 리디렉션 Endpoint로 전송되거나 리디렉션 URI가 완전히 등록되지 않은 경우에 중요합니다.
 
@@ -610,19 +635,19 @@ REQUIRED. 값은 "code"로 설정되어야합니다.
 
 client_id
 
-REQUIRED. [Section 2.2](#22-Client-Identifier)에 설명 된 클라이언트 식별자.
+REQUIRED. [Section 2.2](#22-클라이언트-식별)에 설명 된 클라이언트 식별자.
 
 redirect_uri
 
-OPTIONAL. [Section 3.1.2](#312-Redirection-Endpoint)에 설명 된대로.
+OPTIONAL. [Section 3.1.2](#312-리디렉션-endpoint)에 설명 된대로.
 
 scope
 
-OPTIONAL. [Section 3.3](#33-Access-Token-Scope)에 설명 된 액세스 요청의 범위.
+OPTIONAL. [Section 3.3](#33-액세스-토큰-범위)에 설명 된 액세스 요청의 범위.
 
 state
 
-RECOMMENDED. 요청과 콜백 사이의 상태를 유지하기 위해 클라이언트가 사용하는 불투명 한 값입니다. 권한 부여 서버는 사용자 에이전트를 클라이언트로 다시 리디렉션 할 때이 값을 포함합니다. 매개 변수는 [Section 10.12](#102-Client-Impersonation)에 설명 된대로 교차 사이트 요청 위조를 방지하기 위해 사용되어야합니다 (SHOULD).
+RECOMMENDED. 요청과 콜백 사이의 상태를 유지하기 위해 클라이언트가 사용하는 불투명 한 값입니다. 권한 부여 서버는 사용자 에이전트를 클라이언트로 다시 리디렉션 할 때이 값을 포함합니다. 매개 변수는 [Section 10.2](#1012-교차-사이트-요청-위조)에 설명 된대로 교차 사이트 요청 위조를 방지하기 위해 사용되어야합니다 (SHOULD).
 
 클라이언트는 HTTP 리디렉션 응답을 사용하거나 사용자 에이전트를 통해 사용할 수 있는 다른 방법을 사용하여 리소스 소유자를 구성된 URI로 보냅니다.
 
@@ -730,13 +755,13 @@ REQUIRED. 권하 부여 서버에서 받은 권한 부여 코드입니다.
 
 redirect_uri
 
-REQUIRED, "redirect_uri"매개 변수가 [Section 4.1.1](#411-Authorization-Request)에 설명 된대로 권한 부여 요청에 포함되었으며 해당 값이 동일해야합니다.
+REQUIRED, "redirect_uri"매개 변수가 [Section 4.1.1](#411-권한-부여-요청)에 설명 된대로 권한 부여 요청에 포함되었으며 해당 값이 동일해야합니다.
 
 client_id
 
-REQUIRED. 클라이언트가 [Section 3.2.1](#321-Client-Authentication)에 설명 된대로 권한 부여 서버로 인증하지 않는 경우 필수입니다.
+REQUIRED. 클라이언트가 [Section 3.2.1](#321-클라이언트-인증)에 설명 된대로 권한 부여 서버로 인증하지 않는 경우 필수입니다.
 
-클라이언트 유형이 기밀이거나 클라이언트가 클라이언트 자격 증명을 발급받은 경우 (또는 다른 인증 요구 사항이 할당 된 경우) 클라이언트는 [Section 3.2.1](#321-Client-Authentication)에 설명 된대로 인증 서버로 인증해야합니다.
+클라이언트 유형이 기밀이거나 클라이언트가 클라이언트 자격 증명을 발급받은 경우 (또는 다른 인증 요구 사항이 할당 된 경우) 클라이언트는 [Section 3.2.1](#321-클라이언트-인증)에 설명 된대로 인증 서버로 인증해야합니다.
 
 예를 들어 클라이언트는 TLS를 사용하여 다음 HTTP 요청을 수행합니다. (표시 목적으로 만 추가 줄 바꿈 포함):
 
@@ -758,11 +783,11 @@ o 인증 코드가 인증 된 기밀 클라이언트에 발행되었는지 확�
 
 o 인증 코드가 유효한지 확인하고
 
-o [Section 4.1.1](#411-Authorization-Request)에 설명 된대로 "redirect_uri"매개 변수가 초기 권한 요청에 포함 된 경우 "redirect_uri"매개 변수가 있는지 확인하고 포함 된 경우 해당 값이 동일한 지 확인하십시오.
+o [Section 4.1.1](#411-권한-부여-요청)에 설명 된대로 "redirect_uri"매개 변수가 초기 권한 요청에 포함 된 경우 "redirect_uri"매개 변수가 있는지 확인하고 포함 된 경우 해당 값이 동일한 지 확인하십시오.
 
 #### 4.1.4. 액세스 토큰 응답
 
-액세스 토큰 요청이 유효하고 권한 부여 된 경우 권한 부여 서버는 [Section 5.1](#51-Successful-Response)에 설명 된대로 액세스 토큰과 선택적으로 새로 고침 토큰을 발급합니다. 요청 클라이언트 인증이 실패하거나 유효하지 않은 경우 권한 부여 서버는 [Section 5.2](#52-Error-Response)에 설명 된대로 오류 응답을 반환합니다.
+액세스 토큰 요청이 유효하고 권한 부여 된 경우 권한 부여 서버는 [Section 5.1](#51-성공적인-응답)에 설명 된대로 액세스 토큰과 선택적으로 새로 고침 토큰을 발급합니다. 요청 클라이언트 인증이 실패하거나 유효하지 않은 경우 권한 부여 서버는 [Section 5.2](#52-오류-응답)에 설명 된대로 오류 응답을 반환합니다.
 
 성공적인 응답의 예 :
 
@@ -843,9 +868,9 @@ o [Section 4.1.1](#411-Authorization-Request)에 설명 된대로 "redirect_uri"
 
 (G) 사용자 에이전트는 액세스 토큰을 클라이언트에 전달합니다.
 
-암시 적 허용 사용에 대한 배경 정보는 [Sections 1.3.2](#132-Implicit) and [9](#9-Native-Applications)를 참조하십시오.
+암시 적 허용 사용에 대한 배경 정보는 [Sections 1.3.2](#132-암시적) and [9](#9-네이티브-애플리케이션)를 참조하십시오.
 
-암시 적 허용을 사용할 때 중요한 보안 고려 사항은 [Sections 10.3](#103-Access-Tokens) and [10.16](#1016-Misuse-of-Access-Token-to-Impersonate-Resource-Owner-in-Implicit-Flow)을 참조하십시오.
+암시 적 허용을 사용할 때 중요한 보안 고려 사항은 [Sections 10.3](#103-액세스-토큰) and [10.16](#1016-암시적-흐름에서-리소스-소유자로-가장하기위한-액세스-토큰의-오용)을 참조하십시오.
 
 #### 4.2.1. 권한 부여 요청
 
@@ -857,19 +882,19 @@ REQUIRED. 값은 "token"으로 설정되어야합니다.
 
 client_id
 
-REQUIRED. [Section 2.2](#22-Client-Identifier)에 설명 된 클라이언트 식별자.
+REQUIRED. [Section 2.2](#22-클라이언트-식별)에 설명 된 클라이언트 식별자.
 
 redirect_uri
 
-OPTIONAL. [Section 3.1.2](#312-Redirection-Endpoint)에 설명 된대로.
+OPTIONAL. [Section 3.1.2](#312-리디렉션-endpoint)에 설명 된대로.
 
 scope
 
-OPTIONAL. [Section 3.3](#33-Access-Token-Scope)에 설명 된 액세스 요청의 범위.
+OPTIONAL. [Section 3.3](#33-액세스-토큰-범위)에 설명 된 액세스 요청의 범위.
 
 state
 
-RECOMMENDED. 요청과 콜백 사이의 상태를 유지하기 위해 클라이언트가 사용하는 불투명 한 값입니다. 권한 부여 서버는 사용자 에이전트를 클라이언트로 다시 리디렉션 할 때 이 값을 포함합니다. 매개 변수는 [Section 10.12](#1012-Cross-Site-Request-Forgery)에 설명 된대로 교차 사이트 요청 위조를 방지하기 위해 사용되어야합니다 (SHOULD).
+RECOMMENDED. 요청과 콜백 사이의 상태를 유지하기 위해 클라이언트가 사용하는 불투명 한 값입니다. 권한 부여 서버는 사용자 에이전트를 클라이언트로 다시 리디렉션 할 때 이 값을 포함합니다. 매개 변수는 [Section 10.12](#1012-교차-사이트-요청-위조)에 설명 된대로 교차 사이트 요청 위조를 방지하기 위해 사용되어야합니다 (SHOULD).
 
 클라이언트는 HTTP 리디렉션 응답을 사용하거나 사용자 에이전트를 통해 사용할 수있는 다른 방법을 사용하여 리소스 소유자를 구성된 URI로 보냅니다.
 
@@ -879,7 +904,7 @@ RECOMMENDED. 요청과 콜백 사이의 상태를 유지하기 위해 클라이�
         &redirect_uri=https%3A%2F%2Fclient%2Eexample%2Ecom%2Fcb HTTP/1.1
     Host: server.example.com
 
-권한 부여 서버는 모든 필수 매개 변수가 있고 유효한지 확인하기 위해 요청의 유효성을 검증합니다. 권한 서버는 액세스 토큰을 리디렉션 할 리디렉션 URI가 [Section 3.1.2](#312-Redirection-Endpoint)에 설명 된대로 클라이언트가 등록한 리디렉션 URI와 일치하는지 확인해야합니다.
+권한 부여 서버는 모든 필수 매개 변수가 있고 유효한지 확인하기 위해 요청의 유효성을 검증합니다. 권한 서버는 액세스 토큰을 리디렉션 할 리디렉션 URI가 [Section 3.1.2](#312-리디렉션-endpoint)에 설명 된대로 클라이언트가 등록한 리디렉션 URI와 일치하는지 확인해야합니다.
 
 요청이 유효한 경우 권한 부여 서버는 리소스 소유자를 인증하고 권한 결정을 얻습니다 (리소스 소유자에게 요청하거나 다른 방법을 통해 승인을 설정).
 
@@ -895,7 +920,7 @@ REQUIRED. 권한 부여 서버에서 발급 한 액세스 토큰입니다.
 
 token_type
 
-REQUIRED. [Section 7.1](#71-Access-Token-Types)에 설명 된대로 발행 된 토큰의 유형. 값은 대소 문자를 구분하지 않습니다.
+REQUIRED. [Section 7.1](#71-액세스-토큰-유형)에 설명 된대로 발행 된 토큰의 유형. 값은 대소 문자를 구분하지 않습니다.
 
 expires_in
 
@@ -903,7 +928,7 @@ RECOMMENDED. 액세스 토큰의 수명(초)입니다. 예를 들어, "3600"값�
 
 scope
 
-OPTIONAL, 클라이언트가 요청한 scope과 동일한 경우; 그렇지 않으면 REQUIRED. [Section 3.3](#33-Access-Token-Scope)에 설명 된 액세스 토큰의 범위.
+OPTIONAL, 클라이언트가 요청한 scope과 동일한 경우; 그렇지 않으면 REQUIRED. [Section 3.3](#33-액세스-토큰-범위)에 설명 된 액세스 토큰의 범위.
 
 state
 
@@ -1034,9 +1059,9 @@ REQUIRED. 자원 소유자 비밀번호입니다.
 
 scope
 
-OPTIONAL. [Section 3.3](#33-Access-Token-Scope)에 설명 된 액세스 요청의 범위.
+OPTIONAL. [Section 3.3](#33-액세스-토큰-범위)에 설명 된 액세스 요청의 범위.
 
-클라이언트 유형이 기밀이거나 클라이언트가 클라이언트 자격 증명을 발급받은 경우 (또는 다른 인증 요구 사항이 할당 된 경우) 클라이언트는 [Section 3.2.1](#321-Client-Authentication)에 설명 된대로 인증 서버로 인증해야합니다.
+클라이언트 유형이 기밀이거나 클라이언트가 클라이언트 자격 증명을 발급받은 경우 (또는 다른 인증 요구 사항이 할당 된 경우) 클라이언트는 [Section 3.2.1](#321-클라이언트-인증)에 설명 된대로 인증 서버로 인증해야합니다.
 
 예를 들어 클라이언트는 전송 계층 보안을 사용하여 다음 HTTP 요청을 수행합니다. (표시 목적으로 만 추가 줄 바꿈 포함):
 
@@ -1059,7 +1084,7 @@ o 기존 비밀번호 검증 알고리즘을 사용하여 자원 소유자 비�
 
 #### 4.3.3. 액세스 토큰 응답
 
-액세스 토큰 요청이 유효하고 권한 부여 된 경우 권한 부여 서버는 [Section 5.1](#51-Successful-Response)에 설명 된대로 액세스 토큰과 선택적으로 새로 고침 토큰을 발급합니다. 요청이 클라이언트 인증에 실패했거나 유효하지 않은 경우 권한 부여 서버는 [Section 5.2](#52-Error-Response)에 설명 된대로 오류 응답을 반환합니다.
+액세스 토큰 요청이 유효하고 권한 부여 된 경우 권한 부여 서버는 [Section 5.1](#51-성공적인-응답)에 설명 된대로 액세스 토큰과 선택적으로 새로 고침 토큰을 발급합니다. 요청이 클라이언트 인증에 실패했거나 유효하지 않은 경우 권한 부여 서버는 [Section 5.2](#52-오류-응답)에 설명 된대로 오류 응답을 반환합니다.
 
 성공적인 응답의 예 :
 
@@ -1114,9 +1139,9 @@ REQUIRED. 값은 "client_credentials"로 설정되어야합니다.
 
 scope
 
-OPTIONAL. [Section 3.3](#33-Access-Token-Scope) 설명 된 액세스 요청의 범위.
+OPTIONAL. [Section 3.3](#33-액세스-토큰-범위) 설명 된 액세스 요청의 범위.
 
-클라이언트는 [Section 3.2.1](#321-Client-Authentication)에 설명 된대로 권한 부여 서버로 인증해야합니다.
+클라이언트는 [Section 3.2.1](#321-클라이언트-인증)에 설명 된대로 권한 부여 서버로 인증해야합니다.
 
 예를 들어 클라이언트는 전송 계층 보안을 사용하여 다음 HTTP 요청을 수행합니다. (표시 목적으로 만 추가 줄 바꿈 포함):
 
@@ -1131,7 +1156,7 @@ OPTIONAL. [Section 3.3](#33-Access-Token-Scope) 설명 된 액세스 요청의 �
 
 #### 4.4.3. 액세스 토큰 응답
 
-액세스 토큰 요청이 유효하고 권한이있는 경우 권한 부여 서버는 [Section 5.1](#51-Successful-Response)에 설명 된대로 액세스 토큰을 발급합니다. 새로 고침 토큰은 포함하지 않아야합니다. 요청이 클라이언트 인증에 실패했거나 유효하지 않은 경우 권한 부여 서버는 [Section 5.2](#52-Error-Response)에 설명 된대로 오류 응답을 반환합니다.
+액세스 토큰 요청이 유효하고 권한이있는 경우 권한 부여 서버는 [Section 5.1](#51-성공적인-응답)에 설명 된대로 액세스 토큰을 발급합니다. 새로 고침 토큰은 포함하지 않아야합니다. 요청이 클라이언트 인증에 실패했거나 유효하지 않은 경우 권한 부여 서버는 [Section 5.2](#52-오류-응답)에 설명 된대로 오류 응답을 반환합니다.
 
 성공적인 응답의 예 :
 
@@ -1165,57 +1190,43 @@ OPTIONAL. [Section 3.3](#33-Access-Token-Scope) 설명 된 액세스 요청의 �
      bearer&assertion=PEFzc2VydGlvbiBJc3N1ZUluc3RhbnQ9IjIwMTEtMDU
      [...omitted for brevity...]aG5TdGF0ZW1lbnQ-PC9Bc3NlcnRpb24-
 
-액세스 토큰 요청이 유효하고 권한이있는 경우 권한 부여 서버는 [Section 5.1](#51-Successful-Response)에 설명 된대로 액세스 토큰과 선택적으로 새로 고침 토큰을 발급합니다. 요청이 클라이언트 인증에 실패했거나 유효하지 않은 경우 권한 부여 서버는 [Section 5.2](#52-Error-Response)에 설명 된대로 오류 응답을 반환합니다.
+액세스 토큰 요청이 유효하고 권한이있는 경우 권한 부여 서버는 [Section 5.1](#51-성공적인-응답)에 설명 된대로 액세스 토큰과 선택적으로 새로 고침 토큰을 발급합니다. 요청이 클라이언트 인증에 실패했거나 유효하지 않은 경우 권한 부여 서버는 [Section 5.2](#52-오류-응답)에 설명 된대로 오류 응답을 반환합니다.
 
 ## 5. 액세스 토큰 발급
 
-If the access token request is valid and authorized, the authorization server issues an access token and optional refresh token as described in [Section 5.1](#51-Successful-Response). If the request failed client authentication or is invalid, the authorization server returns an error response as described in [Section 5.2](#52-Error-Response).
+액세스 토큰 요청이 유효하고 권한부여 된 경우 권한 부여 서버는 [Section 5.1](#51-성공적인-응답)에 설명 된대로 액세스 토큰과 선택적으로 새로 고침 토큰을 발급합니다. 요청이 클라이언트 인증에 실패했거나 유효하지 않은 경우 권한 부여 서버는 [Section 5.2](#52-오류-응답)에 설명 된대로 오류 응답을 반환합니다.
 
-### 5.1. Successful Response
+### 5.1. 성공적인 응답
 
-The authorization server issues an access token and optional refresh
-token, and constructs the response by adding the following parameters
-to the entity-body of the HTTP response with a 200 (OK) status code:
+권한 부여 서버는 액세스 토큰과 선택적으로 새로 고침 토큰을 발급하고 200(OK) 상태 코드를 사용하여 HTTP 응답의 엔티티 본문에 다음 매개 변수를 추가하여 응답을 구성합니다.
 
 access_token
-REQUIRED. The access token issued by the authorization server.
+
+필수입니다. 권한 부여 서버에서 발급 한 액세스 토큰입니다.
 
 token_type
-REQUIRED. The type of the token issued as described in
-[Section 7.1](#71-Access-Token-Types). Value is case insensitive.
+
+REQUIRED. [Section 7.1](#71-액세스-토큰-유형)에 설명 된대로 발행 된 토큰의 유형. 값은 대소 문자를 구분하지 않습니다.
 
 expires_in
-RECOMMENDED. The lifetime in seconds of the access token. For
-example, the value "3600" denotes that the access token will
-expire in one hour from the time the response was generated.
-If omitted, the authorization server SHOULD provide the
-expiration time via other means or document the default value.
+
+RECOMMENDED. 액세스 토큰의 수명(초)입니다. 예를 들어, "3600"값은 응답이 생성 된 후 1 시간 후에 액세스 토큰이 만료됨을 나타냅니다. 생략 된 경우 권한 부여 서버는 다른 수단을 통해 만료 시간을 제공하거나 기본값을 문서화해야합니다.
 
 refresh_token
-OPTIONAL. The refresh token, which can be used to obtain new
-access tokens using the same authorization grant as described
-in [Section 6](#6-Refreshing-an-Access-Token).
+
+OPTIONAL. [Section 6](#6-액세스-토큰-새로-고침)에 설명 된 것과 동일한 권한 부여를 사용하여 새 액세스 토큰을 얻는 데 사용할 수 있는 새로 고침 토큰.
 
 scope
-OPTIONAL, if identical to the scope requested by the client;
-otherwise, REQUIRED. The scope of the access token as
-described by [Section 3.3](#33-Access-Token-Scope).
 
-The parameters are included in the entity-body of the HTTP response
-using the "application/json" media type as defined by [[RFC4627](https://tools.ietf.org/html/rfc4627)]. The
-parameters are serialized into a JavaScript Object Notation (JSON)
-structure by adding each parameter at the highest structure level.
-Parameter names and string values are included as JSON strings.
-Numerical values are included as JSON numbers. The order of
-parameters does not matter and can vary.
+OPTIONAL, 클라이언트가 요청한 범위와 동일한 경우; 그렇지 않으면,
 
-The authorization server MUST include the HTTP "Cache-Control"
-response header field [[RFC2616](https://tools.ietf.org/html/rfc2616)] with a value of "no-store" in any
-response containing tokens, credentials, or other sensitive
-information, as well as the "Pragma" response header field [[RFC2616](https://tools.ietf.org/html/rfc2616)]
-with a value of "no-cache".
+REQUIRED. [Section 3.3](#33-액세스-토큰-범위)에 설명 된 액세스 토큰의 범위.
 
-For example:
+매개 변수는 [[RFC4627](https://tools.ietf.org/html/rfc4627)]에 정의 된대로 "application/json"미디어 유형을 사용하여 HTTP 응답의 엔티티 본문에 포함됩니다. 매개 변수는 가장 높은 구조 수준에서 각 매개 변수를 추가하여 JSON (JavaScript Object Notation) 구조로 직렬화됩니다. 매개 변수 이름과 문자열 값은 JSON 문자열로 포함됩니다. 숫자 값은 JSON 숫자로 포함됩니다. 매개 변수의 순서는 중요하지 않으며 다를 수 있습니다.
+
+인증 서버는 값이 "no-cache"인 [[RFC2616](https://tools.ietf.org/html/rfc2616)] "Pragma"응답 헤더 필드뿐만 아니라 토큰, 자격 증명 또는 기타 민감한 정보가 포함 된 모든 응답에 "no-store"값이있는 HTTP "Cache-Control"응답 헤더 필드 [[RFC2616](https://tools.ietf.org/html/rfc2616)]를 포함해야합니다.
+
+예를 들면 :
 
      HTTP/1.1 200 OK
      Content-Type: application/json;charset=UTF-8
@@ -1230,85 +1241,60 @@ For example:
        "example_parameter":"example_value"
      }
 
-The client MUST ignore unrecognized value names in the response. The
-sizes of tokens and other values received from the authorization
-server are left undefined. The client should avoid making
-assumptions about value sizes. The authorization server SHOULD
-document the size of any value it issues.
+클라이언트는 응답에서 인식되지 않는 값 이름을 무시해야합니다. 권한 부여 서버에서 수신 한 토큰 및 기타 값의 크기는 정의되지 않은 상태로 남아 있습니다. 클라이언트는 값 크기에 대한 추측을 피해야합니다. 권한 부여 서버는 발행하는 값의 크기를 문서화해야합니다.
 
-### 5.2. Error Response
+### 5.2. 오류 응답
 
-The authorization server responds with an HTTP 400 (Bad Request)
-status code (unless specified otherwise) and includes the following
-parameters with the response:
+인증 서버는 HTTP 400(잘못된 요청) 상태 코드 (리 지정하지 않는 한)로 응답하고 응답에 다음 매개 변수를 포함합니다.
 
 error
-REQUIRED. A single ASCII [[USASCII](https://tools.ietf.org/html/rfc6749#ref-USASCII)] error code from the
-following:
 
-         invalid_request
-               The request is missing a required parameter, includes an
-               unsupported parameter value (other than grant type),
-               repeats a parameter, includes multiple credentials,
-               utilizes more than one mechanism for authenticating the
-               client, or is otherwise malformed.
+REQUIRED. A single ASCII [[USASCII](https://tools.ietf.org/html/rfc6749#ref-USASCII)] error code from the following:
 
-         invalid_client
-               Client authentication failed (e.g., unknown client, no
-               client authentication included, or unsupported
-               authentication method).  The authorization server MAY
-               return an HTTP 401 (Unauthorized) status code to indicate
-               which HTTP authentication schemes are supported.  If the
-               client attempted to authenticate via the "Authorization"
-               request header field, the authorization server MUST
-               respond with an HTTP 401 (Unauthorized) status code and
-               include the "WWW-Authenticate" response header field
-               matching the authentication scheme used by the client.
+     invalid_request
+           요청에 필수 매개 변수가 누락되었거나 지원되지 않는 매개 변수 값(허가 유형 제외)이
+           포함되어 있거나 매개 변수를 반복하거나 여러 자격 증명을 포함하거나
+           클라이언트 인증을 위해 둘 이상의 메커니즘을 사용하거나 기타 형식이 잘못되었습니다.
 
-         invalid_grant
-               The provided authorization grant (e.g., authorization
-               code, resource owner credentials) or refresh token is
-               invalid, expired, revoked, does not match the redirection
-               URI used in the authorization request, or was issued to
-               another client.
+     invalid_client
+           클라이언트 인증에 실패했습니다. (예 : 알 수없는 클라이언트,
+           포함 된 클라이언트 인증 없음 또는 지원되지 않는 인증 방법).
+           인증 서버는 HTTP 401(Unauthorized) 상태 코드를 반환하여
+           지원되는 HTTP 인증 체계를 나타낼 수 있습니다.
+           클라이언트가 "Authorization"요청 헤더 필드를 통해 인증을 시도한 경우
+           권한 서버는 반드시 HTTP 401(Unauthorized) 상태 코드로 응답하고
+           클라이언트가 사용하는 인증 체계와 일치하는
+           "WWW-Authenticate"응답 헤더 필드를 포함해야합니다.
 
-         unauthorized_client
-               The authenticated client is not authorized to use this
-               authorization grant type.
+     invalid_grant
+           제공된 권한 부여 (예 : 권한 부여 코드, 리소스 소유자 자격 증명)
+           또는 새로 고침 토큰이 유효하지 않거나 만료되었거나 취소되었거나
+           권한 요청에 사용 된 리디렉션 URI와 일치하지 않거나 다른 클라이언트에 발급되었습니다.
 
-         unsupported_grant_type
-               The authorization grant type is not supported by the
-               authorization server.
+     unauthorized_client
+           인증 된 클라이언트는 이 권한 부여 유형을 사용할 권한이 없습니다.
 
-         invalid_scope
-               The requested scope is invalid, unknown, malformed, or
-               exceeds the scope granted by the resource owner.
+     unsupported_grant_type
+           권한 부여 유형이 권한 부여 서버에서 지원되지 않습니다.
 
-         Values for the "error" parameter MUST NOT include characters
-         outside the set %x20-21 / %x23-5B / %x5D-7E.
+     invalid_scope
+           요청 된 범위가 잘못되었거나 알 수 없거나 형식이 잘못되었거나
+           리소스 소유자가 부여한 범위를 초과합니다.
+
+     "오류"매개 변수의 값은 %x20-21 / %x23-5B / %x5D-7E 세트 외부의 문자를
+     포함하면 안됩니다.
 
 error_description
-OPTIONAL. Human-readable ASCII [[USASCII](https://tools.ietf.org/html/rfc6749#ref-USASCII)] text providing
-additional information, used to assist the client developer in
-understanding the error that occurred.
-Values for the "error_description" parameter MUST NOT include
-characters outside the set %x20-21 / %x23-5B / %x5D-7E.
+
+OPTIONAL. 클라이언트 개발자가 발생한 오류를 이해하는 데 사용되는 추가 정보를 제공하는 사람이 읽을 수있는 ASCII [[USASCII](https://tools.ietf.org/html/rfc6749#ref-USASCII)] 텍스트입니다. "error_description"매개 변수의 값은 %x20-21 / %x23-5B / %x5D-7E 세트 외부의 문자를 포함하면 안됩니다 (MUST NOT).
 
 error_uri
-OPTIONAL. A URI identifying a human-readable web page with
-information about the error, used to provide the client
-developer with additional information about the error.
-Values for the "error_uri" parameter MUST conform to the
-URI-reference syntax and thus MUST NOT include characters
-outside the set %x21 / %x23-5B / %x5D-7E.
 
-The parameters are included in the entity-body of the HTTP response
-using the "application/json" media type as defined by [[RFC4627](https://tools.ietf.org/html/rfc4627)]. The
-parameters are serialized into a JSON structure by adding each
-parameter at the highest structure level. Parameter names and string
-values are included as JSON strings. Numerical values are included
-as JSON numbers. The order of parameters does not matter and can
-vary.
+OPTIONAL. 오류에 대한 정보가있는 사람이 읽을 수있는 웹 페이지를 식별하는 URI로, 클라이언트 개발자에게 오류에 대한 추가 정보를 제공하는 데 사용됩니다. "error_uri"매개 변수의 값은 URI 참조 구문을 준수해야하며 따라서 %x21 / %x23-5B / %x5D-7E 세트 외부의 문자를 포함하면 안됩니다.
+
+매개 변수는 [[RFC4627](https://tools.ietf.org/html/rfc4627)]에 정의 된대로 "application/json"미디어 유형을 사용하여 HTTP 응답의 엔티티 본문에 포함됩니다. 매개 변수는 가장 높은 구조 수준에서 각 매개 변수를 추가하여 JSON 구조로 직렬화됩니다. 매개 변수 이름과 문자열 값은 JSON 문자열로 포함됩니다. 숫자 값은 JSON 숫자로 포함됩니다. 매개 변수의 순서는 중요하지 않으며 다를 수 있습니다.
+
+예를 들면 :
 
 For example:
 
@@ -1321,37 +1307,25 @@ For example:
        "error":"invalid_request"
      }
 
-## 6. Refreshing an Access Token
+## 6. 액세스 토큰 새로 고침
 
-If the authorization server issued a refresh token to the client, the
-client makes a refresh request to the token endpoint by adding the
-following parameters using the "application/x-www-form-urlencoded"
-format per [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type) with a character encoding of UTF-8 in the HTTP
-request entity-body:
+권한 부여 서버가 클라이언트에 새로 고침 토큰을 발행 한 경우 클라이언트는 HTTP 요청 엔티티 본문에 UTF-8 문자 인코딩으로 [Appendix B](#Appendix-B.-Use-of-application%2Fx-www-form-urlencoded-Media-Type)에 따라 "application/x-www-form-urlencoded"형식을 사용하여 다음 매개 변수를 추가하여 토큰 엔드 포인트에 새로 고침을 요청합니다.
 
 grant_type
-REQUIRED. Value MUST be set to "refresh_token".
+
+REQUIRED. 값은 "refresh_token"으로 설정되어야합니다.
 
 refresh_token
-REQUIRED. The refresh token issued to the client.
+
+REQUIRED. 클라이언트에 발급 된 새로 고침 토큰입니다.
 
 scope
-OPTIONAL. The scope of the access request as described by
-[Section 3.3](#33-Access-Token-Scope). The requested scope MUST NOT include any scope
-not originally granted by the resource owner, and if omitted is
-treated as equal to the scope originally granted by the
-resource owner.
 
-Because refresh tokens are typically long-lasting credentials used to
-request additional access tokens, the refresh token is bound to the
-client to which it was issued. If the client type is confidential or
-the client was issued client credentials (or assigned other
-authentication requirements), the client MUST authenticate with the
-authorization server as described in [Section 3.2.1](#321-Client-Authentication).
+OPTIONAL. [Section 3.3](#33-액세스-토큰-범위)에 설명 된 액세스 요청의 범위. 요청 된 범위는 자원 소유자가 원래 부여하지 않은 범위를 포함하지 않아야하며 생략 된 경우 자원 소유자가 원래 부여한 범위와 동일하게 처리됩니다.
 
-For example, the client makes the following HTTP request using
-transport-layer security (with extra line breaks for display purposes
-only):
+새로 고침 토큰은 일반적으로 추가 액세스 토큰을 요청하는 데 사용되는 오래 지속되는 자격 증명이므로 새로 고침 토큰은 발급 된 클라이언트에 바인딩됩니다. 클라이언트 유형이 기밀이거나 클라이언트가 클라이언트 자격 증명을 발급받은 경우 (또는 다른 인증 요구 사항이 할당 된 경우) 클라이언트는 [Section 3.2.1](#321-클라이언트-인증)에 설명 된대로 인증 서버로 인증해야합니다.
+
+예를 들어 클라이언트는 전송 계층 보안을 사용하여 다음 HTTP 요청을 수행합니다. (표시 목적으로 만 추가 줄 바꿈 포함):
 
      POST /token HTTP/1.1
      Host: server.example.com
@@ -1360,68 +1334,35 @@ only):
 
      grant_type=refresh_token&refresh_token=tGzv3JOkF0XG5Qx2TlKWIA
 
-The authorization server MUST:
+권한 부여 서버는 다음을 수행해야합니다:
 
-o require client authentication for confidential clients or for any
-client that was issued client credentials (or with other
-authentication requirements),
+o 기밀 클라이언트 또는 클라이언트 자격 증명 (또는 기타 인증 요구 사항)이 발급 된 클라이언트에 대해 클라이언트 인증을 요구합니다.
 
-o authenticate the client if client authentication is included and
-ensure that the refresh token was issued to the authenticated
-client, and
+o 클라이언트 인증이 포함 된 경우 클라이언트를 인증하고 인증 된 클라이언트에 새로 고침 토큰이 발급되었는지 확인합니다.
 
-o validate the refresh token.
+o 새로 고침 토큰의 유효성을 검사합니다.
 
-If valid and authorized, the authorization server issues an access
-token as described in [Section 5.1](#51-Successful-Response). If the request failed
-verification or is invalid, the authorization server returns an error
-response as described in [Section 5.2](#52-Error-Response).
+유효하고 권한이있는 경우 권한 부여 서버는 [Section 5.1](#51-성공적인-응답)에 설명 된대로 액세스 토큰을 발급합니다. 요청이 확인에 실패했거나 유효하지 않은 경우 권한 부여 서버는 [Section 5.2](#52-오류-응답)에 설명 된대로 오류 응답을 반환합니다.
 
-The authorization server MAY issue a new refresh token, in which case
-the client MUST discard the old refresh token and replace it with the
-new refresh token. The authorization server MAY revoke the old
-refresh token after issuing a new refresh token to the client. If a
-new refresh token is issued, the refresh token scope MUST be
-identical to that of the refresh token included by the client in the
-request.
+권한 부여 서버는 새 새로 고침 토큰을 발행 할 수 있으며,이 경우 클라이언트는 이전 새로 고침 토큰을 폐기하고 새 새로 고침 토큰으로 교체해야합니다. 권한 부여 서버는 클라이언트에 새 새로 고침 토큰을 발급 한 후 이전 새로 고침 토큰을 취소 할 수 있습니다. 새 새로 고침 토큰이 발행되면 새로 고침 토큰 범위는 클라이언트가 요청에 포함하는 새로 고침 토큰의 범위와 동일해야합니다.
 
-## 7. Accessing Protected Resources
+## 7. 보호 된 리소스에 액세스
 
-The client accesses protected resources by presenting the access
-token to the resource server. The resource server MUST validate the
-access token and ensure that it has not expired and that its scope
-covers the requested resource. The methods used by the resource
-server to validate the access token (as well as any error responses)
-are beyond the scope of this specification but generally involve an
-interaction or coordination between the resource server and the
-authorization server.
+클라이언트는 리소스 서버에 액세스 토큰을 제공하여 보호 된 리소스에 액세스합니다. 리소스 서버는 액세스 토큰의 유효성을 검사하고 만료되지 않았는지 그리고 해당 범위가 요청 된 리소스를 포함하는지 확인해야합니다. 액세스 토큰 (및 오류 응답)을 확인하기 위해 리소스 서버가 사용하는 방법은 이 사양의 범위를 벗어나지 만 일반적으로 리소스 서버와 권한 부여 서버 간의 상호 작용 또는 조정을 포함합니다.
 
-The method in which the client utilizes the access token to
-authenticate with the resource server depends on the type of access
-token issued by the authorization server. Typically, it involves
-using the HTTP "Authorization" request header field [[RFC2617](https://tools.ietf.org/html/rfc2617)] with an
-authentication scheme defined by the specification of the access
-token type used, such as [[RFC6750](https://tools.ietf.org/html/rfc6750)].
+클라이언트가 액세스 토큰을 사용하여 리소스 서버에 인증하는 방법은 권한 부여 서버에서 발급 한 액세스 토큰 유형에 따라 다릅니다. 일반적으로 [[RFC6750](https://tools.ietf.org/html/rfc6750)]과 같이 사용되는 액세스 토큰 유형의 사양에 의해 정의 된 인증 체계와 함께 HTTP "Authorization"요청 헤더 필드 [[RFC2617](https://tools.ietf.org/html/rfc2617)]를 사용합니다.
 
-### 7.1. Access Token Types
+### 7.1. 액세스 토큰 유형
 
-The access token type provides the client with the information
-required to successfully utilize the access token to make a protected
-resource request (along with type-specific attributes). The client
-MUST NOT use an access token if it does not understand the token
-type.
+액세스 토큰 유형은 클라이언트에게 액세스 토큰을 성공적으로 활용하여 보호 된 리소스 요청 (유형별 속성과 함께)을 만드는 데 필요한 정보를 제공합니다. 클라이언트는 토큰 유형을 이해하지 못하는 경우 액세스 토큰을 사용해서는 안됩니다.
 
-For example, the "bearer" token type defined in [[RFC6750](https://tools.ietf.org/html/rfc6750)] is utilized
-by simply including the access token string in the request:
+예를 들어 [[RFC6750](https://tools.ietf.org/html/rfc6750)]에 정의 된 "bearer"토큰 유형은 요청에 액세스 토큰 문자열을 포함하기 만하면 활용됩니다:
 
      GET /resource/1 HTTP/1.1
      Host: example.com
      Authorization: Bearer mF_9.B5f-4.1JqM
 
-while the "mac" token type defined in [[OAuth-HTTP-MAC](https://tools.ietf.org/html/rfc6749#ref-OAuth-HTTP-MAC)] is utilized by
-issuing a Message Authentication Code (MAC) key together with the
-access token that is used to sign certain components of the HTTP
-requests:
+[[OAuth-HTTP-MAC](https://tools.ietf.org/html/rfc6749#ref-OAuth-HTTP-MAC)]에 정의 된 "mac"토큰 유형은 HTTP 요청의 특정 구성 요소에 서명하는 데 사용되는 액세스 토큰과 함께 메시지 인증 코드 (MAC) 키를 발행하여 활용됩니다:
 
      GET /resource/1 HTTP/1.1
      Host: example.com
@@ -1429,601 +1370,256 @@ requests:
                         nonce="274312:dj83hs9s",
                         mac="kDZvddkndxvhGRXZhvuDjEWhGeE="
 
-The above examples are provided for illustration purposes only.
-Developers are advised to consult the [[RFC6750](https://tools.ietf.org/html/rfc6750)] and [[OAuth-HTTP-MAC](https://tools.ietf.org/html/rfc6749#ref-OAuth-HTTP-MAC)]
-specifications before use.
+위의 예는 설명 목적으로 만 제공됩니다. 개발자는 사용하기 전에 [[RFC6750](https://tools.ietf.org/html/rfc6750)] 및 [[OAuth-HTTP-MAC](https://tools.ietf.org/html/rfc6749#ref-OAuth-HTTP-MAC)] 사양을 참조하는 것이 좋습니다.
 
-Each access token type definition specifies the additional attributes
-(if any) sent to the client together with the "access_token" response
-parameter. It also defines the HTTP authentication method used to
-include the access token when making a protected resource request.
+각 액세스 토큰 유형 정의는 "access_token"응답 매개 변수와 함께 클라이언트에 전송되는 추가 속성 (있는 경우)을 지정합니다. 또한 보호 된 리소스 요청을 할 때 액세스 토큰을 포함하는 데 사용되는 HTTP 인증 방법을 정의합니다.
 
-### 7.2. Error Response
+### 7.2. 오류 응답
 
-If a resource access request fails, the resource server SHOULD inform
-the client of the error. While the specifics of such error responses
-are beyond the scope of this specification, this document establishes
-a common registry in [Section 11.4](#114-OAuth-Extensions-Error-Registry) for error values to be shared among
-OAuth token authentication schemes.
+리소스 액세스 요청이 실패하면 리소스 서버는 클라이언트에게 오류를 알려야합니다 (SHOULD). 이러한 오류 응답의 세부 사항은 이 사양의 범위를 벗어나지 만이 문서는 OAuth 토큰 인증 체계간에 오류 값을 공유하기 위해 [Section 11.4](#114-oauth-extensions-error-registry)에서 공통 레지스트리를 설정합니다.
 
-New authentication schemes designed primarily for OAuth token
-authentication SHOULD define a mechanism for providing an error
-status code to the client, in which the error values allowed are
-registered in the error registry established by this specification.
+주로 OAuth 토큰 인증을 위해 설계된 새로운 인증 체계는 클라이언트에 오류 상태 코드를 제공하는 메커니즘을 정의해야합니다 (SHOULD). 여기서 허용 된 오류 값은 이 사양에 의해 설정된 오류 레지스트리에 등록됩니다.
 
-Such schemes MAY limit the set of valid error codes to a subset of
-the registered values. If the error code is returned using a named
-parameter, the parameter name SHOULD be "error".
+이러한 scheme는 유효한 오류 코드 집합을 등록 된 값의 하위 집합으로 제한 할 수 있습니다. 명명 된 매개 변수를 사용하여 오류 코드가 반환되는 경우 매개 변수 이름은 "error"여야합니다 (SHOULD).
 
-Other schemes capable of being used for OAuth token authentication,
-but not primarily designed for that purpose, MAY bind their error
-values to the registry in the same manner.
+OAuth 토큰 인증에 사용할 수 있지만 주로 해당 목적으로 설계되지 않은 다른 체계는 동일한 방식으로 오류 값을 레지스트리에 바인딩 할 수 있습니다.
 
-New authentication schemes MAY choose to also specify the use of the
-"error_description" and "error_uri" parameters to return error
-information in a manner parallel to their usage in this
-specification.
+새로운 인증 체계는 "error_description"및 "error_uri"매개 변수의 사용을 지정하여 이 사양에서의 사용과 병렬로 오류 정보를 반환하도록 선택할 수도 있습니다.
 
-## 8. Extensibility
+## 8. 확장성
 
-### 8.1. Defining Access Token Types
+### 8.1. 액세스 토큰 유형 정의
 
-Access token types can be defined in one of two ways: registered in
-the Access Token Types registry (following the procedures in
-[Section 11.1](#111-OAuth-Access-Token-Types-Registry)), or by using a unique absolute URI as its name.
+액세스 토큰 유형은 액세스 토큰 유형 레지스트리에 등록 ([Section 11.1](#111-oauth-access-token-types-registry))의 절차에 따라)하거나 고유 한 절대 URI를 이름으로 사용하는 두 가지 방법 중 하나로 정의 할 수 있습니다.
 
-Types utilizing a URI name SHOULD be limited to vendor-specific
-implementations that are not commonly applicable, and are specific to
-the implementation details of the resource server where they are
-used.
+URI 이름을 사용하는 유형은 일반적으로 적용 할 수 없는 공급 업체별 구현으로 제한되어야하며 이들이 사용되는 리소스 서버의 구현 세부 사항에 고유해야합니다.
 
-All other types MUST be registered. Type names MUST conform to the
-type-name ABNF. If the type definition includes a new HTTP
-authentication scheme, the type name SHOULD be identical to the HTTP
-authentication scheme name (as defined by [[RFC2617](https://tools.ietf.org/html/rfc2617)]). The token type
-"example" is reserved for use in examples.
+다른 모든 유형은 등록해야합니다. 유형 이름은 유형 이름 ABNF를 준수해야합니다. 유형 정의에 새로운 HTTP 인증 체계가 포함 된 경우 유형 이름은 HTTP 인증 체계 이름 ([[RFC2617](https://tools.ietf.org/html/rfc2617)])에 정의 된대로)과 동일해야합니다 (SHOULD). 토큰 유형 "example"은 예제에서 사용하도록 예약되어 있습니다.
 
      type-name  = 1*name-char
      name-char  = "-" / "." / "_" / DIGIT / ALPHA
 
-### 8.2. Defining New Endpoint Parameters
+### 8.2. 새 Endpoint 매개 변수 정의
 
-New request or response parameters for use with the authorization
-endpoint or the token endpoint are defined and registered in the
-OAuth Parameters registry following the procedure in [Section 11.2](#112-OAuth-Parameters-Registry).
+권한 부여 Endpoint 또는 토큰 Endpoint와 함께 사용 할 새 요청 또는 응답 매개 변수는 [Section 11.2](#112-oauth-parameters-registry)의 절차에 따라 OAuth 매개 변수 레지스트리에 정의되고 등록됩니다.
 
-Parameter names MUST conform to the param-name ABNF, and parameter
-values syntax MUST be well-defined (e.g., using ABNF, or a reference
-to the syntax of an existing parameter).
+매개 변수 이름은 매개 변수 이름 ABNF를 준수해야하며 매개 변수 값 구문은 잘 정의되어야합니다 (예 : ABNF 사용 또는 기존 매개 변수의 구문 참조).
 
      param-name  = 1*name-char
      name-char   = "-" / "." / "_" / DIGIT / ALPHA
 
-Unregistered vendor-specific parameter extensions that are not
-commonly applicable and that are specific to the implementation
-details of the authorization server where they are used SHOULD
-utilize a vendor-specific prefix that is not likely to conflict with
-other registered values (e.g., begin with 'companyname\_').
+일반적으로 적용 할 수 없고 사용되는 권한 부여 서버의 구현 세부 사항에 특정한 등록되지 않은 공급 업체별 매개 변수 확장은 다른 등록 된 값과 충돌 할 가능성이 없는 공급 업체별 접두사를 사용해야합니다 (예 : 'companyname\_'로 시작).
 
-### 8.3. Defining New Authorization Grant Types
+### 8.3. 새 권한 부여 유형 정의
 
-New authorization grant types can be defined by assigning them a
-unique absolute URI for use with the "grant_type" parameter. If the
-extension grant type requires additional token endpoint parameters,
-they MUST be registered in the OAuth Parameters registry as described
-by [Section 11.2](#112-OAuth-Parameters-Registry).
+새로운 권한 부여 유형은 "grant_type"매개 변수와 함께 사용할 고유 한 절대 URI를 할당하여 정의 할 수 있습니다. 확장 부여 유형에 추가 토큰 엔드 포인트 매개 변수가 필요한 경우 [Section 11.2](#112-oauth-parameters-registry)에 설명 된대로 OAuth 매개 변수 레지스트리에 등록해야합니다.
 
-### 8.4. Defining New Authorization Endpoint Response Types
+### 8.4. 새 권한 부여 Endpoint 응답 유형 정의
 
-New response types for use with the authorization endpoint are
-defined and registered in the Authorization Endpoint Response Types
-registry following the procedure in [Section 11.3](#11..OAuth-Authorization-Endpoint-Response-Types-Registry). Response type
-names MUST conform to the response-type ABNF.
+권한 부여 Endpoint와 함께 사용할 새 응답 유형은 [Section 11.3](#11.3.-OAuth-Authorization-Endpoint-Response-Types-Registry)의 절차에 따라 권한 부여 Endpoint 응답 유형 레지스트리에 정의되고 등록됩니다. 응답 유형 이름은 응답 유형 ABNF를 준수해야합니다.
 
      response-type  = response-name *( SP response-name )
      response-name  = 1*response-char
      response-char  = "_" / DIGIT / ALPHA
 
-If a response type contains one or more space characters (%x20), it
-is compared as a space-delimited list of values in which the order of
-values does not matter. Only one order of values can be registered,
-which covers all other arrangements of the same set of values.
+응답 유형에 공백 문자 (%x20)가 하나 이상 포함되어 있으면 값 순서가 중요하지 않은 공백으로 구분 된 값 목록과 비교됩니다. 동일한 값 세트의 다른 모든 배열을 포함하는 하나의 값 순서 만 등록 할 수 있습니다.
 
-For example, the response type "token code" is left undefined by this
-specification. However, an extension can define and register the
-"token code" response type. Once registered, the same combination
-cannot be registered as "code token", but both values can be used to
-denote the same response type.
+예를 들어, 응답 유형 "token code"는 이 사양에 정의되지 않은 상태로 남아 있습니다. 그러나 확장은 "token code"응답 유형을 정의하고 등록 할 수 있습니다. 등록한 후에는 동일한 조합을 "token code"으로 등록 할 수 없지만 두 값을 모두 사용하여 동일한 응답 유형을 나타낼 수 있습니다.
 
-### 8.5. Defining Additional Error Codes
+### 8.5. 추가 오류 코드 정의
 
-In cases where protocol extensions (i.e., access token types,
-extension parameters, or extension grant types) require additional
-error codes to be used with the authorization code grant error
-response ([Section 4.1.2.1](#4.1.2.1.-Error-Response)), the implicit grant error response
-([Section 4.2.2.1](#4.2.2.1.-Error-Response)), the token error response ([Section 5.2](#52-Error-Response)), or the
-resource access error response ([Section 7.2](#72-Error-Response)), such error codes MAY be
-defined.
+프로토콜 확장 (예 : 액세스 토큰 유형, 확장 매개 변수 또는 확장 권한 부여 유형)에서 권한 부여 코드 부여 오류 응답 ([Section 4.1.2.1](#4121-오류-응답)), 암시 적 권한 부여 오류 응답 ([Section 4.2.2.1](#4221-오류-응답)), 토큰 오류 응답 ([Section 5.2](#52-오류-응답)) 또는 리소스 액세스 오류 응답 ([Section 7.2](#72-오류-응답))과 함께 추가 오류 코드가 필요한 경우 이러한 오류 코드는 정의 될 수 있습니다.
 
-Extension error codes MUST be registered (following the procedures in
-[Section 11.4](#114-OAuth-Extensions-Error-Registry)) if the extension they are used in conjunction with is a
-registered access token type, a registered endpoint parameter, or an
-extension grant type. Error codes used with unregistered extensions
-MAY be registered.
+확장 오류 코드는 함께 사용되는 확장이 등록 된 액세스 토큰 유형, 등록 된 엔드 포인트 매개 변수 또는 확장 부여 유형 인 경우 반드시 등록되어야합니다 ([Section 11.4](#114-OAuth-Extensions-Error-Registry))의 절차에 따라). 등록되지 않은 확장에 사용 된 오류 코드를 등록 할 수 있습니다.
 
-Error codes MUST conform to the error ABNF and SHOULD be prefixed by
-an identifying name when possible. For example, an error identifying
-an invalid value set to the extension parameter "example" SHOULD be
-named "example_invalid".
+오류 코드는 오류 ABNF를 준수해야하며 가능하면 식별 이름을 접두사로 붙여야합니다 (SHOULD). 예를 들어, 확장 매개 변수 "example"에 설정된 유효하지 않은 값을 식별하는 오류는 "example_invalid"로 이름을 지정해야합니다 (SHOULD).
 
      error      = 1*error-char
      error-char = %x20-21 / %x23-5B / %x5D-7E
 
-## 9. Native Applications
-
-Native applications are clients installed and executed on the device
-used by the resource owner (i.e., desktop application, native mobile
-application). Native applications require special consideration
-related to security, platform capabilities, and overall end-user
-experience.
-
-The authorization endpoint requires interaction between the client
-and the resource owner's user-agent. Native applications can invoke
-an external user-agent or embed a user-agent within the application.
-For example:
-
-o External user-agent - the native application can capture the
-response from the authorization server using a redirection URI
-with a scheme registered with the operating system to invoke the
-client as the handler, manual copy-and-paste of the credentials,
-running a local web server, installing a user-agent extension, or
-by providing a redirection URI identifying a server-hosted
-resource under the client's control, which in turn makes the
-response available to the native application.
-
-o Embedded user-agent - the native application obtains the response
-by directly communicating with the embedded user-agent by
-monitoring state changes emitted during the resource load, or
-accessing the user-agent's cookies storage.
-
-When choosing between an external or embedded user-agent, developers
-should consider the following:
-
-o An external user-agent may improve completion rate, as the
-resource owner may already have an active session with the
-authorization server, removing the need to re-authenticate. It
-provides a familiar end-user experience and functionality. The
-
-      resource owner may also rely on user-agent features or extensions
-      to assist with authentication (e.g., password manager, 2-factor
-      device reader).
-
-o An embedded user-agent may offer improved usability, as it removes
-the need to switch context and open new windows.
-
-o An embedded user-agent poses a security challenge because resource
-owners are authenticating in an unidentified window without access
-to the visual protections found in most external user-agents. An
-embedded user-agent educates end-users to trust unidentified
-requests for authentication (making phishing attacks easier to
-execute).
-
-When choosing between the implicit grant type and the authorization
-code grant type, the following should be considered:
-
-o Native applications that use the authorization code grant type
-SHOULD do so without using client credentials, due to the native
-application's inability to keep client credentials confidential.
-
-o When using the implicit grant type flow, a refresh token is not
-returned, which requires repeating the authorization process once
-the access token expires.
-
-## 10. Security Considerations
-
-As a flexible and extensible framework, OAuth's security
-considerations depend on many factors. The following sections
-provide implementers with security guidelines focused on the three
-client profiles described in [Section 2.1](#21-Client-Types): web application,
-user-agent-based application, and native application.
-
-A comprehensive OAuth security model and analysis, as well as
-background for the protocol design, is provided by
-[[OAuth-THREATMODEL](https://tools.ietf.org/html/rfc6749#ref-OAuth-THREATMODEL)].
-
-### 10.1. Client Authentication
-
-The authorization server establishes client credentials with web
-application clients for the purpose of client authentication. The
-authorization server is encouraged to consider stronger client
-authentication means than a client password. Web application clients
-MUST ensure confidentiality of client passwords and other client
-credentials.
-
-The authorization server MUST NOT issue client passwords or other
-client credentials to native application or user-agent-based
-application clients for the purpose of client authentication. The
-authorization server MAY issue a client password or other credentials
-for a specific installation of a native application client on a
-specific device.
-
-When client authentication is not possible, the authorization server
-SHOULD employ other means to validate the client's identity -- for
-example, by requiring the registration of the client redirection URI
-or enlisting the resource owner to confirm identity. A valid
-redirection URI is not sufficient to verify the client's identity
-when asking for resource owner authorization but can be used to
-prevent delivering credentials to a counterfeit client after
-obtaining resource owner authorization.
-
-The authorization server must consider the security implications of
-interacting with unauthenticated clients and take measures to limit
-the potential exposure of other credentials (e.g., refresh tokens)
-issued to such clients.
-
-### 10.2. Client Impersonation
-
-A malicious client can impersonate another client and obtain access
-to protected resources if the impersonated client fails to, or is
-unable to, keep its client credentials confidential.
-
-The authorization server MUST authenticate the client whenever
-possible. If the authorization server cannot authenticate the client
-due to the client's nature, the authorization server MUST require the
-registration of any redirection URI used for receiving authorization
-responses and SHOULD utilize other means to protect resource owners
-from such potentially malicious clients. For example, the
-authorization server can engage the resource owner to assist in
-identifying the client and its origin.
-
-The authorization server SHOULD enforce explicit resource owner
-authentication and provide the resource owner with information about
-the client and the requested authorization scope and lifetime. It is
-up to the resource owner to review the information in the context of
-the current client and to authorize or deny the request.
-
-The authorization server SHOULD NOT process repeated authorization
-requests automatically (without active resource owner interaction)
-without authenticating the client or relying on other measures to
-ensure that the repeated request comes from the original client and
-not an impersonator.
-
-### 10.3. Access Tokens
-
-Access token credentials (as well as any confidential access token
-attributes) MUST be kept confidential in transit and storage, and
-only shared among the authorization server, the resource servers the
-access token is valid for, and the client to whom the access token is
-issued. Access token credentials MUST only be transmitted using TLS
-as described in [Section 1.6](#16-TLS-Version) with server authentication as defined by
-[[RFC2818](https://tools.ietf.org/html/rfc2818)].
-
-When using the implicit grant type, the access token is transmitted
-in the URI fragment, which can expose it to unauthorized parties.
-
-The authorization server MUST ensure that access tokens cannot be
-generated, modified, or guessed to produce valid access tokens by
-unauthorized parties.
-
-The client SHOULD request access tokens with the minimal scope
-necessary. The authorization server SHOULD take the client identity
-into account when choosing how to honor the requested scope and MAY
-issue an access token with less rights than requested.
-
-This specification does not provide any methods for the resource
-server to ensure that an access token presented to it by a given
-client was issued to that client by the authorization server.
-
-### 10.4. Refresh Tokens
-
-Authorization servers MAY issue refresh tokens to web application
-clients and native application clients.
-
-Refresh tokens MUST be kept confidential in transit and storage, and
-shared only among the authorization server and the client to whom the
-refresh tokens were issued. The authorization server MUST maintain
-the binding between a refresh token and the client to whom it was
-issued. Refresh tokens MUST only be transmitted using TLS as
-described in [Section 1.6](#16-TLS-Version) with server authentication as defined by
-[[RFC2818](https://tools.ietf.org/html/rfc2818)].
-
-The authorization server MUST verify the binding between the refresh
-token and client identity whenever the client identity can be
-authenticated. When client authentication is not possible, the
-authorization server SHOULD deploy other means to detect refresh
-token abuse.
-
-For example, the authorization server could employ refresh token
-rotation in which a new refresh token is issued with every access
-token refresh response. The previous refresh token is invalidated
-
-but retained by the authorization server. If a refresh token is
-compromised and subsequently used by both the attacker and the
-legitimate client, one of them will present an invalidated refresh
-token, which will inform the authorization server of the breach.
-
-The authorization server MUST ensure that refresh tokens cannot be
-generated, modified, or guessed to produce valid refresh tokens by
-unauthorized parties.
-
-### 10.5. Authorization Codes
-
-The transmission of authorization codes SHOULD be made over a secure
-channel, and the client SHOULD require the use of TLS with its
-redirection URI if the URI identifies a network resource. Since
-authorization codes are transmitted via user-agent redirections, they
-could potentially be disclosed through user-agent history and HTTP
-referrer headers.
-
-Authorization codes operate as plaintext bearer credentials, used to
-verify that the resource owner who granted authorization at the
-authorization server is the same resource owner returning to the
-client to complete the process. Therefore, if the client relies on
-the authorization code for its own resource owner authentication, the
-client redirection endpoint MUST require the use of TLS.
-
-Authorization codes MUST be short lived and single-use. If the
-authorization server observes multiple attempts to exchange an
-authorization code for an access token, the authorization server
-SHOULD attempt to revoke all access tokens already granted based on
-the compromised authorization code.
-
-If the client can be authenticated, the authorization servers MUST
-authenticate the client and ensure that the authorization code was
-issued to the same client.
-
-### 10.6. Authorization Code Redirection URI Manipulation
-
-When requesting authorization using the authorization code grant
-type, the client can specify a redirection URI via the "redirect_uri"
-parameter. If an attacker can manipulate the value of the
-redirection URI, it can cause the authorization server to redirect
-the resource owner user-agent to a URI under the control of the
-attacker with the authorization code.
-
-An attacker can create an account at a legitimate client and initiate
-the authorization flow. When the attacker's user-agent is sent to
-the authorization server to grant access, the attacker grabs the
-authorization URI provided by the legitimate client and replaces the
-
-client's redirection URI with a URI under the control of the
-attacker. The attacker then tricks the victim into following the
-manipulated link to authorize access to the legitimate client.
-
-Once at the authorization server, the victim is prompted with a
-normal, valid request on behalf of a legitimate and trusted client,
-and authorizes the request. The victim is then redirected to an
-endpoint under the control of the attacker with the authorization
-code. The attacker completes the authorization flow by sending the
-authorization code to the client using the original redirection URI
-provided by the client. The client exchanges the authorization code
-with an access token and links it to the attacker's client account,
-which can now gain access to the protected resources authorized by
-the victim (via the client).
-
-In order to prevent such an attack, the authorization server MUST
-ensure that the redirection URI used to obtain the authorization code
-is identical to the redirection URI provided when exchanging the
-authorization code for an access token. The authorization server
-MUST require public clients and SHOULD require confidential clients
-to register their redirection URIs. If a redirection URI is provided
-in the request, the authorization server MUST validate it against the
-registered value.
-
-### 10.7. Resource Owner Password Credentials
-
-The resource owner password credentials grant type is often used for
-legacy or migration reasons. It reduces the overall risk of storing
-usernames and passwords by the client but does not eliminate the need
-to expose highly privileged credentials to the client.
-
-This grant type carries a higher risk than other grant types because
-it maintains the password anti-pattern this protocol seeks to avoid.
-The client could abuse the password, or the password could
-unintentionally be disclosed to an attacker (e.g., via log files or
-other records kept by the client).
-
-Additionally, because the resource owner does not have control over
-the authorization process (the resource owner's involvement ends when
-it hands over its credentials to the client), the client can obtain
-access tokens with a broader scope than desired by the resource
-owner. The authorization server should consider the scope and
-lifetime of access tokens issued via this grant type.
-
-The authorization server and client SHOULD minimize use of this grant
-type and utilize other grant types whenever possible.
-
-### 10.8. Request Confidentiality
-
-Access tokens, refresh tokens, resource owner passwords, and client
-credentials MUST NOT be transmitted in the clear. Authorization
-codes SHOULD NOT be transmitted in the clear.
-
-The "state" and "scope" parameters SHOULD NOT include sensitive
-client or resource owner information in plain text, as they can be
-transmitted over insecure channels or stored insecurely.
-
-### 10.9. Ensuring Endpoint Authenticity
-
-In order to prevent man-in-the-middle attacks, the authorization
-server MUST require the use of TLS with server authentication as
-defined by [[RFC2818](https://tools.ietf.org/html/rfc2818)] for any request sent to the authorization and
-token endpoints. The client MUST validate the authorization server's
-TLS certificate as defined by [[RFC6125](https://tools.ietf.org/html/rfc6125)] and in accordance with its
-requirements for server identity authentication.
-
-### 10.10. Credentials-Guessing Attacks
-
-The authorization server MUST prevent attackers from guessing access
-tokens, authorization codes, refresh tokens, resource owner
-passwords, and client credentials.
-
-The probability of an attacker guessing generated tokens (and other
-credentials not intended for handling by end-users) MUST be less than
-or equal to 2^(-128) and SHOULD be less than or equal to 2^(-160).
-
-The authorization server MUST utilize other means to protect
-credentials intended for end-user usage.
-
-### 10.11. Phishing Attacks
-
-Wide deployment of this and similar protocols may cause end-users to
-become inured to the practice of being redirected to websites where
-they are asked to enter their passwords. If end-users are not
-careful to verify the authenticity of these websites before entering
-their credentials, it will be possible for attackers to exploit this
-practice to steal resource owners' passwords.
-
-Service providers should attempt to educate end-users about the risks
-phishing attacks pose and should provide mechanisms that make it easy
-for end-users to confirm the authenticity of their sites. Client
-developers should consider the security implications of how they
-interact with the user-agent (e.g., external, embedded), and the
-ability of the end-user to verify the authenticity of the
-authorization server.
-
-To reduce the risk of phishing attacks, the authorization servers
-MUST require the use of TLS on every endpoint used for end-user
-interaction.
-
-### 10.12. Cross-Site Request Forgery
-
-Cross-site request forgery (CSRF) is an exploit in which an attacker
-causes the user-agent of a victim end-user to follow a malicious URI
-(e.g., provided to the user-agent as a misleading link, image, or
-redirection) to a trusting server (usually established via the
-presence of a valid session cookie).
-
-A CSRF attack against the client's redirection URI allows an attacker
-to inject its own authorization code or access token, which can
-result in the client using an access token associated with the
-attacker's protected resources rather than the victim's (e.g., save
-the victim's bank account information to a protected resource
-controlled by the attacker).
-
-The client MUST implement CSRF protection for its redirection URI.
-This is typically accomplished by requiring any request sent to the
-redirection URI endpoint to include a value that binds the request to
-the user-agent's authenticated state (e.g., a hash of the session
-cookie used to authenticate the user-agent). The client SHOULD
-utilize the "state" request parameter to deliver this value to the
-authorization server when making an authorization request.
-
-Once authorization has been obtained from the end-user, the
-authorization server redirects the end-user's user-agent back to the
-client with the required binding value contained in the "state"
-parameter. The binding value enables the client to verify the
-validity of the request by matching the binding value to the
-user-agent's authenticated state. The binding value used for CSRF
-protection MUST contain a non-guessable value (as described in
-[Section 10.10](#1010-Credentials-Guessing-Attacks)), and the user-agent's authenticated state (e.g.,
-session cookie, HTML5 local storage) MUST be kept in a location
-accessible only to the client and the user-agent (i.e., protected by
-same-origin policy).
-
-A CSRF attack against the authorization server's authorization
-endpoint can result in an attacker obtaining end-user authorization
-for a malicious client without involving or alerting the end-user.
-
-The authorization server MUST implement CSRF protection for its
-authorization endpoint and ensure that a malicious client cannot
-obtain authorization without the awareness and explicit consent of
-the resource owner.
+## 9. 네이티브 애플리케이션
+
+기본 응용 프로그램은 리소스 소유자가 사용하는 장치 (예 : 데스크톱 응용 프로그램, 기본 모바일 응용 프로그램)에 설치되고 실행되는 클라이언트입니다. 기본 애플리케이션에는 보안, 플랫폼 기능 및 전반적인 최종 사용자 경험과 관련된 특별한 고려 사항이 필요합니다.
+
+권한 부여 Endpoint에는 클라이언트와 리소스 소유자의 사용자 에이전트 간의 상호 작용이 필요합니다. 기본 애플리케이션은 외부 사용자 에이전트를 호출하거나 애플리케이션 내에 사용자 에이전트를 포함 할 수 있습니다. 예를 들면 :
+
+o 외부 사용자 에이전트-네이티브 애플리케이션은 운영 체제에 등록 된 체계가있는 리디렉션 URI를 사용하여 권한 부여 서버에서 응답을 캡처하여 클라이언트를 핸들러로 호출하고 자격 증명의 수동 복사 및 붙여 넣기, 로컬 실행 웹 서버, 사용자 에이전트 확장을 설치하거나 클라이언트의 제어하에 서버 호스팅 리소스를 식별하는 리디렉션 URI를 제공하여 네이티브 애플리케이션에서 응답을 사용할 수 있도록합니다.
+
+o 임베디드 사용자 에이전트-네이티브 애플리케이션은 리소스 로드 중에 발생하는 상태 변경을 모니터링하거나 사용자 에이전트의 쿠키 저장소에 액세스하여 임베디드 사용자 에이전트와 직접 통신하여 응답을 얻습니다.
+
+외부 또는 임베디드 사용자 에이전트 중에서 선택할 때 개발자는 다음 사항을 고려해야합니다.
+
+o 외부 사용자 에이전트는 자원 소유자가 이미 권한 부여 서버와 활성 세션을 가지고있을 수 있으므로 재 인증 필요성을 제거하여 익숙한 최종 사용자 경험과 기능을 제공합니다.
+
+      리소스 소유자는 인증을 지원하기 위해 사용자 에이전트 기능 또는 확장 (예 : 암호 관리자, 2 단계 장치 판독기)에 의존 할 수도 있습니다.
+
+o 내장 된 사용자 에이전트는 컨텍스트를 전환하고 새 창을 열 필요가 없으므로 향상된 사용성을 제공 할 수 있습니다.
+
+o 내장 된 사용자 에이전트는 대부분의 외부 사용자 에이전트에서 볼 수있는 시각적 보호에 액세스하지 않고 리소스 소유자가 식별되지 않은 창에서 인증하기 때문에 보안 문제를 제기합니다. 내장 된 사용자 에이전트는 최종 사용자가 식별되지 않은 인증 요청을 신뢰하도록 교육합니다 (피싱 공격을 더 쉽게 실행할 수 있음).
+
+암시 적 부여 유형과 권한 부여 코드 부여 유형 중에서 선택할 때 다음 사항을 고려해야합니다.
+
+o 인증 코드 부여 유형을 사용하는 네이티브 애플리케이션은 네이티브 애플리케이션이 클라이언트 자격 증명을 기밀로 유지할 수 없기 때문에 클라이언트 자격 증명을 사용하지 않아야 합니다 (SHOULD).
+
+o 암시 적 권한 부여 유형 흐름을 사용할 때 새로 고침 토큰이 반환되지 않으므로 액세스 토큰이 만료되면 권한 부여 프로세스를 반복해야합니다.
+
+## 10. 보안 고려 사항
+
+유연하고 확장 가능한 프레임워크 인 OAuth의 보안 고려 사항은 여러 요소에 따라 달라집니다. [Section 2.1](#21-클라이언트-유형)에 설명 된 세 가지 클라이언트 프로필 인 웹 애플리케이션, 사용자 에이전트 기반 애플리케이션 및 기본 애플리케이션에 초점을 맞춘 보안 지침을 구현 자에게 제공합니다.
+
+[[OAuth-THREATMODEL](https://tools.ietf.org/html/rfc6749#ref-OAuth-THREATMODEL)]은 포괄적 인 OAuth 보안 모델 및 분석과 프로토콜 설계의 배경을 제공합니다.
+
+### 10.1. 클라이언트 인증
+
+권한 부여 서버는 클라이언트 인증을 위해 웹 응용 프로그램 클라이언트에 클라이언트 자격 증명을 설정합니다. 권한 부여 서버는 클라이언트 암호보다 더 강력한 클라이언트 인증 수단을 고려하는 것이 좋습니다. 웹 애플리케이션 클라이언트는 클라이언트 암호 및 기타 클라이언트 자격 증명의 기밀성을 보장해야합니다.
+
+권한 부여 서버는 클라이언트 인증을 위해 클라이언트 암호 또는 기타 클라이언트 자격 증명을 기본 응용 프로그램 또는 사용자 에이전트 기반 응용 프로그램 클라이언트에 발급해서는 안됩니다. 권한 부여 서버는 특정 장치에 기본 응용 프로그램 클라이언트의 특정 설치를 위해 클라이언트 암호 또는 기타 자격 증명을 발급 할 수 있습니다.
+
+클라이언트 인증이 불가능한 경우 권한 부여 서버는 클라이언트의 ID를 확인하기 위해 다른 수단을 사용해야합니다 (예 : 클라이언트 리디렉션 URI의 등록을 요구하거나 리소스 소유자에게 ID를 확인하도록 요청). 유효한 리디렉션 URI는 리소스 소유자 권한 부여를 요청할 때 클라이언트의 ID를 확인하는 데 충분하지 않지만 리소스 소유자 권한을 얻은 후 위조 클라이언트에 자격 증명을 전달하는 것을 방지하는 데 사용할 수 있습니다.
+
+권한 부여 서버는 인증되지 않은 클라이언트와 상호 작용할 때의 보안 의미를 고려하고 해당 클라이언트에 발급 된 다른 자격 증명 (예 : 새로 고침 토큰)의 잠재적 인 노출을 제한하는 조치를 취해야합니다.
+
+### 10.2. 클라이언트 가장
+
+악의적 인 클라이언트는 가장 된 클라이언트가 클라이언트 자격 증명을 기밀로 유지하지 못하거나 유지할 수없는 경우 다른 클라이언트를 가장하고 보호 된 리소스에 대한 액세스 권한을 얻을 수 있습니다.
+
+권한 부여 서버는 가능할 때마다 클라이언트를 인증해야합니다. 권한 부여 서버가 클라이언트의 특성으로 인해 클라이언트를 인증 할 수없는 경우 권한 부여 서버는 인증 응답을 수신하는 데 사용되는 리디렉션 URI의 등록을 요구해야하며 잠재적으로 악의적 인 클라이언트로부터 자원 소유자를 보호하기 위해 다른 수단을 사용해야합니다 (SHOULD). 예를 들어, 권한 부여 서버는 클라이언트 및 해당 출처를 식별하는 데 도움을주기 위해 자원 소유자를 참여시킬 수 있습니다.
+
+권한 부여 서버는 명시 적 자원 소유자 인증을 시행하고 클라이언트에 대한 정보와 요청 된 권한 범위 및 수명을 자원 소유자에게 제공해야합니다. 현재 클라이언트의 컨텍스트에서 정보를 검토하고 요청을 승인하거나 거부하는 것은 리소스 소유자에게 달려 있습니다.
+
+권한 부여 서버는 클라이언트를 인증하거나 다른 조치에 의존하지 않고 반복 된 권한 요청이 가장자가 아닌 원래 클라이언트에서 오는지 확인하지 않고 자동으로 (활성 리소스 소유자 상호 작용없이) 요청을 처리해서는 안됩니다.
+
+### 10.3. 액세스 토큰
+
+액세스 토큰 자격 증명 (기밀 액세스 토큰 속성 포함)은 전송 및 저장시 기밀로 유지되어야하며 권한 부여 서버, 액세스 토큰이 유효한 리소스 서버 및 액세스 토큰이 발급 된 클라이언트간에만 공유되어야합니다. 액세스 토큰 자격 증명은 [[RFC2818](https://tools.ietf.org/html/rfc2818)]에 정의 된 서버 인증과 함께 [Section 1.6](#16-tls-version)에 설명 된대로 TLS를 사용하여 전송되어야합니다.
+
+암시 적 허용 유형을 사용하는 경우 액세스 토큰은 URI fragment로 전송되어 권한이 없는 당사자에게 노출 될 수 있습니다.
+
+인증 서버는 인증되지 않은 당사자가 유효한 액세스 토큰을 생성하기 위해 액세스 토큰을 생성, 수정 또는 추측 할 수 없도록 해야합니다.
+
+클라이언트는 필요한 최소한의 범위로 액세스 토큰을 요청해야합니다. 인증 서버는 요청 된 범위를 선택할 때 클라이언트 ID를 고려해야하며 요청 된 것보다 적은 권한으로 액세스 토큰을 발급 할 수 있습니다.
+
+이 사양은 주어진 클라이언트가 제공 한 액세스 토큰이 권한 부여 서버에 의해 해당 클라이언트에 발급되었는지 확인하기 위해 리소스 서버에 대한 방법을 제공하지 않습니다.
+
+### 10.4. 새로 고침 토큰
+
+권한 부여 서버는 웹 애플리케이션 클라이언트와 네이티브 애플리케이션 클라이언트에 새로 고침 토큰을 발행 할 수 있습니다.
+
+새로 고침 토큰은 전송 및 저장시 기밀로 유지되어야하며 갱신 토큰이 발행 된 인증 서버와 클라이언트 사이에서만 공유되어야합니다. 권한 부여 서버는 갱신 토큰과 발행 된 클라이언트 사이의 바인딩을 유지해야합니다. 갱신 토큰은 [[RFC2818](https://tools.ietf.org/html/rfc2818)]에 정의 된대로 서버 인증과 함께 [Section 1.6](#16-tls-version)에 설명 된대로 TLS를 사용하여 전송되어야합니다.
+
+권한 부여 서버는 클라이언트 ID가 인증 될 때마다 새로 고침 토큰과 클라이언트 ID 간의 바인딩을 확인해야합니다. 클라이언트 인증이 불가능한 경우 권한 부여 서버는 새로 고침 토큰 남용을 감지하기 위해 다른 수단을 배포해야합니다 (SHOULD).
+
+예를 들어 권한 부여 서버는 모든 액세스 토큰 새로 고침 응답과 함께 새 새로 고침 토큰이 발급되는 새로 고침 토큰 순환을 사용하여 이전 새로 고침 토큰이 무효화되도록 합니다.
+
+그러나 권한 부여 서버에 의해 유지됩니다. 새로 고침 토큰이 손상되어 공격자와 합법적 인 클라이언트가 모두 사용하는 경우 그중 하나가 무효화 된 새로 고침 토큰을 제공하여 위반 사실을 인증 서버에 알립니다.
+
+권한 부여 서버는 권한이 없는 당사자가 유효한 새로 고침 토큰을 생성하기 위해 새로 고침 토큰을 생성, 수정 또는 추측 할 수 없도록 해야합니다.
+
+### 10.5. 권한 부여 코드
+
+권한 부여 코드의 전송은 보안 채널을 통해 이루어져야하며, URI가 네트워크 리소스를 식별하는 경우 클라이언트는 리디렉션 URI와 함께 TLS를 사용해야합니다 (SHOULD). 권한 부여 코드는 사용자 에이전트 리디렉션을 통해 전송되기 때문에 사용자 에이전트 기록 및 HTTP 참조 헤더를 통해 공개 될 수 있습니다.
+
+권한 부여 코드는 권한 부여 서버에서 권한을 부여한 자원 소유자가 프로세스를 완료하기 위해 클라이언트에 반환하는 동일한 자원 소유자인지 확인하는 데 사용되는 일반 텍스트 전달자 자격 증명으로 작동합니다. 따라서 클라이언트가 자체 리소스 소유자 인증을위한 권한 부여 코드에 의존하는 경우 클라이언트 리디렉션 Endpoint는 TLS를 사용해야합니다.
+
+권한 부여 코드는 수명이 짧고 일회용이어야합니다. 권한 부여 서버가 액세스 토큰에 대한 권한 부여 코드를 교환하려는 여러 번의 시도를 관찰하면 권한 부여 서버는 손상된 인증 코드를 기반으로 이미 부여 된 모든 액세스 토큰을 취소하려고 시도해야합니다 (SHOULD).
+
+클라이언트가 인증 될 수있는 경우 권한 부여 서버는 클라이언트를 인증하고 권한 코드가 동일한 클라이언트에 발급되었는지 확인해야합니다.
+
+### 10.6. 권한 부여 코드 리디렉션 URI 조작
+
+권한 부여 코드 부여 유형을 사용하여 인증을 요청할 때 클라이언트는 "redirect_uri"매개 변수를 통해 리디렉션 URI를 지정할 수 있습니다. 공격자가 리디렉션 URI의 값을 조작 할 수있는 경우 권한 부여 서버가 리소스 소유자 사용자 에이전트를 권한 코드가있는 공격자의 제어하에있는 URI로 리디렉션하도록 할 수 있습니다.
+
+공격자는 합법적인 클라이언트에서 계정을 만들고 권한 부여 흐름을 시작할 수 있습니다. 공격자의 사용자 에이전트가 액세스 권한을 부여하기 위해 권한 부여 서버로 전송되면 공격자는 합법적인 클라이언트가 제공 한 권한 부여 URI를 가져 와서 클라이언트의 리디렉션 URI를 공격자가 제어하는 URI로 바꿉니다. 그런 다음 공격자는 피해자가 조작 된 링크를 따라 가도록 속여 합법적 인 클라이언트에 대한 액세스 권한을 부여합니다.
+
+권한 부여 서버에서 피해자는 합법적이고 신뢰할 수있는 클라이언트를 대신하여 정상적이고 유효한 요청을 프롬프트하고 요청을 승인합니다. 그런 다음 피해자는 인증 코드를 사용하여 공격자가 제어하는 ​​엔드 포인트로 리디렉션됩니다. 공격자는 클라이언트가 제공 한 원래 리디렉션 URI를 사용하여 클라이언트에 인증 코드를 전송하여 인증 흐름을 완료합니다. 클라이언트는 인증 코드를 액세스 토큰과 교환하고이를 공격자의 클라이언트 계정에 연결합니다. 그러면 이제 피해자가 인증 한 보호 된 리소스에 액세스 할 수 있습니다 (클라이언트를 통해).
+
+이러한 공격을 방지하기 위해 인증 서버는 인증 코드를 얻기 위해 사용 된 리디렉션 URI가 액세스 토큰에 대한 인증 코드를 교환 할 때 제공된 리디렉션 URI와 동일한 지 확인해야합니다. 권한 부여 서버는 반드시 공용 클라이언트를 필요로하고 기밀 클라이언트가 리디렉션 URI를 등록하도록 요구해야합니다 (SHOULD). 요청에 리디렉션 URI가 제공되면 권한 부여 서버는 등록 된 값에 대해 이를 확인해야합니다.
+
+### 10.7. 리소스 소유자 암호 자격 증명
+
+리소스 소유자 암호 자격 증명 부여 유형은 종종 레거시 또는 마이그레이션 이유로 사용됩니다. 클라이언트가 사용자 이름과 암호를 저장하는 전반적인 위험을 줄이지 만 높은 권한을 가진 자격 증명을 클라이언트에 노출 할 필요가 없습니다.
+
+이 부여 유형은 이 프로토콜이 피하려는 암호 안티 패턴을 유지하기 때문에 다른 부여 유형보다 더 높은 위험을 수반합니다. 클라이언트가 암호를 남용하거나 의도하지 않게 공격자에게 암호가 공개 될 수 있습니다 (예 : 클라이언트가 보관하는 로그 파일 또는 기타 기록을 통해).
+
+또한 리소스 소유자가 권한 부여 프로세스를 제어 할 수 없기 때문에 (리소스 소유자의 참여는 클라이언트에게 자격 증명을 넘겨 줄 때 종료 됨) 클라이언트는 리소스 소유자가 원하는 것보다 더 넓은 범위의 액세스 토큰을 얻을 수 있습니다. 권한 부여 서버는 이 권한 부여 유형을 통해 발급 된 액세스 토큰의 범위와 수명을 고려해야합니다.
+
+권한 부여 서버와 클라이언트는 이 권한 부여 유형의 사용을 최소화하고 가능할 때마다 다른 권한 부여 유형을 활용해야합니다.
+
+### 10.8. 기밀성 요청
+
+액세스 토큰, 새로 고침 토큰, 리소스 소유자 암호 및 클라이언트 자격 증명은 일반 정보로 전송하면 안됩니다. 인증 코드는 투명하게 전송하면 안됩니다.
+
+"state"및 "scope"매개 변수는 안전하지 않은 채널을 통해 전송되거나 안전하지 않게 저장 될 수 있으므로 민감한 클라이언트 또는 리소스 소유자 정보를 일반 텍스트로 포함해서는 안됩니다.
+
+### 10.9. 엔드 포인트 신뢰성 보장
+
+man-in-the-middle 공격을 방지하기 위해 권한 부여 서버는 권한 부여 및 토큰 Endpoint로 전송 된 모든 요청에 대해 [[RFC2818](https://tools.ietf.org/html/rfc2818)]에 정의 된 서버 인증과 함께 TLS를 사용해야합니다. 클라이언트는 [[RFC6125](https://tools.ietf.org/html/rfc6125)]에 정의 된대로 그리고 서버 신원 인증에 대한 요구 사항에 따라 권한 부여 서버의 TLS 인증서를 확인해야합니다.
+
+### 10.10. 자격 증명 추측 공격
+
+인증 서버는 공격자가 액세스 토큰, 인증 코드, 새로 고침 토큰, 리소스 소유자 암호 및 클라이언트 자격 증명을 추측하지 못하도록해야합니다.
+
+공격자가 생성 된 토큰 (및 최종 사용자가 처리하도록 의도되지 않은 기타 자격 증명)을 추측 할 확률은 2^(-128)보다 작거나 같아야하고 2^(-160)보다 작거나 같아야합니다 (SHOULD).
+
+권한 서버는 최종 사용자 사용을위한 자격 증명을 보호하기 위해 다른 수단을 사용해야합니다.
+
+### 10.11. 피싱 공격
+
+이 프로토콜과 유사한 프로토콜을 광범위하게 배포하면 최종 사용자가 암호를 입력하라는 웹 사이트로 리디렉션되는 관행에 익숙해 질 수 있습니다. 최종 사용자가 자격 증명을 입력하기 전에 이러한 웹 사이트의 진위 여부를 신중하게 확인하지 않으면 공격자가이 방법을 악용하여 리소스 소유자의 암호를 훔칠 수 있습니다.
+
+서비스 제공 업체는 피싱 공격으로 인한 위험에 대해 최종 사용자를 교육해야하며 최종 사용자가 사이트의 진위 여부를 쉽게 확인할 수있는 메커니즘을 제공해야합니다. 클라이언트 개발자는 사용자 에이전트와 상호 작용하는 방식 (예 : 외부, 임베디드)의 보안 의미와 최종 사용자가 권한 부여 서버의 진위를 확인하는 능력을 고려해야합니다.
+
+피싱 공격의 위험을 줄이기 위해 권한 부여 서버는 최종 사용자 상호 작용에 사용되는 모든 엔드 포인트에서 TLS를 사용해야합니다.
+
+### 10.12. 교차 사이트 요청 위조
+
+CSRF(Cross-Site Request Forgery)는 공격자가 피해자 최종 사용자의 사용자 에이전트가 악성 URI로 (예 : 사용자 에이전트에 오해의 소지가있는 링크, 이미지 또는 리디렉션으로 제공됨) 신뢰된 서버 (일반적으로 유효한 세션 쿠키의 존재를 통해 설정 됨)에 전송합니다.
+
+클라이언트의 리디렉션 URI에 대한 CSRF 공격을 통해 공격자는 자신의 인증 코드 또는 액세스 토큰을 주입 할 수 있습니다. 이로 인해 클라이언트는 피해자의 리소스가 아닌 공격자의 보호 된 리소스와 관련된 액세스 토큰을 사용할 수 있습니다 (예 : 피해자의 은행 계좌 정보 저장). 공격자가 제어하는 ​​보호 된 리소스에 연결).
+
+클라이언트는 리디렉션 URI에 대한 CSRF 보호를 구현해야합니다. 이는 일반적으로 리디렉션 URI 엔드 포인트로 전송 된 모든 요청에 ​​요청을 사용자 에이전트의 인증 된 상태 (예 : 사용자 에이전트를 인증하는 데 사용되는 세션 쿠키의 해시)에 바인딩하는 값을 포함하도록 요구하여 수행됩니다. 클라이언트는 인증 요청을 할 때 인증 서버에이 값을 전달하기 위해 "state"요청 매개 변수를 사용해야합니다.
+
+최종 사용자로부터 인증을 받으면 인증 서버는 "state"매개 변수에 포함 된 필수 바인딩 값을 사용하여 최종 사용자의 사용자 에이전트를 클라이언트로 다시 리디렉션합니다. 바인딩 값을 사용하면 클라이언트가 바인딩 값을 사용자 에이전트의 인증 된 상태와 일치시켜 요청의 유효성을 확인할 수 있습니다. CSRF 보호에 사용되는 바인딩 값은 추정 할 수없는 값 ([Section 10.10](#1010-자격-증명-추측-공격)에 설명 됨)을 포함해야하며 사용자 에이전트의 인증 상태 (예 : 세션 쿠키, HTML5 로컬 저장소)는 클라이언트 만 액세스 할 수있는 위치에 유지되어야합니다. 및 사용자 에이전트 (즉, 동일 출처 정책에 의해 보호됨).
+
+권한 부여 서버의 권한 부여 Endpoint에 대한 CSRF 공격은 공격자가 최종 사용자를 포함하거나 경고하지 않고 악의적인 클라이언트에 대한 최종 사용자 권한을 획득 할 수 있습니다.
+
+권한 부여 서버는 권한 부여 Endpoint에 대한 CSRF 보호를 구현해야하며 악의적인 클라이언트가 리소스 소유자의 인식 및 명시 적 동의없이 권한을 얻을 수 없도록해야합니다.
 
 ### 10.13. Clickjacking
 
-In a clickjacking attack, an attacker registers a legitimate client
-and then constructs a malicious site in which it loads the
-authorization server's authorization endpoint web page in a
-transparent iframe overlaid on top of a set of dummy buttons, which
-are carefully constructed to be placed directly under important
-buttons on the authorization page. When an end-user clicks a
-misleading visible button, the end-user is actually clicking an
-invisible button on the authorization page (such as an "Authorize"
-button). This allows an attacker to trick a resource owner into
-granting its client access without the end-user's knowledge.
+Clickjacking 공격에서 공격자는 합법적 인 클라이언트를 등록한 다음 직접 배치 할 수 있도록 신중하게 구성된 더미 버튼 위에 오버레이 된 투명한 iframe에 권한 부여 서버의 권한 부여 Endpoint 웹 페이지를로드하는 악성 사이트를 구성합니다. 인증 페이지의 중요한 버튼 아래에 있습니다. 최종 사용자가 오해의 소지가있는 보이는 버튼을 클릭하면 최종 사용자는 실제로 인증 페이지에서 보이지 않는 버튼 (예 : "Authorize"버튼)을 클릭하는 것입니다. 이를 통해 공격자는 리소스 소유자를 속여 최종 사용자가 모르게 클라이언트 액세스 권한을 부여 할 수 있습니다.
 
-To prevent this form of attack, native applications SHOULD use
-external browsers instead of embedding browsers within the
-application when requesting end-user authorization. For most newer
-browsers, avoidance of iframes can be enforced by the authorization
-server using the (non-standard) "x-frame-options" header. This
-header can have two values, "deny" and "sameorigin", which will block
-any framing, or framing by sites with a different origin,
-respectively. For older browsers, JavaScript frame-busting
-techniques can be used but may not be effective in all browsers.
+이러한 형태의 공격을 방지하기 위해 네이티브 애플리케이션은 최종 사용자 인증을 요청할 때 애플리케이션 내에 브라우저를 포함하는 대신 외부 브라우저를 사용해야합니다. 대부분의 최신 브라우저에서는 (비표준) "x-frame-options"헤더를 사용하여 권한 부여 서버에서 iframe을 피할 수 있습니다. 이 헤더에는 "deny"및 "sameorigin"이라는 두 가지 값이있을 수 있으며, 이는 각각 다른 출처를 가진 사이트 별 프레임 또는 프레임을 차단합니다. 이전 브라우저의 경우 JavaScript frame-busting 기술을 사용할 수 있지만 모든 브라우저에서 효과적이지 않을 수 있습니다.
 
-### 10.14. Code Injection and Input Validation
+### 10.14. 코드 삽입 및 입력 유효성 검사
 
-A code injection attack occurs when an input or otherwise external
-variable is used by an application unsanitized and causes
-modification to the application logic. This may allow an attacker to
-gain access to the application device or its data, cause denial of
-service, or introduce a wide range of malicious side-effects.
+코드 삽입 공격은 입력 또는 기타 외부 변수가 응용 프로그램에 의해 사용되어 응용 프로그램 로직을 수정하는 경우 발생합니다. 이로 인해 공격자는 애플리케이션 장치 또는 해당 데이터에 대한 액세스 권한을 얻거나 서비스 거부를 유발하거나 광범위한 악의적인 부작용을 일으킬 수 있습니다.
 
-The authorization server and client MUST sanitize (and validate when
-possible) any value received -- in particular, the value of the
-"state" and "redirect_uri" parameters.
+권한 부여 서버와 클라이언트는 수신 된 모든 값, 특히 "state"및 "redirect_uri"매개 변수의 값을 삭제해야합니다 (가능한 경우 유효성 검사).
 
-### 10.15. Open Redirectors
+### 10.15. 리디렉터 열기
 
-The authorization server, authorization endpoint, and client
-redirection endpoint can be improperly configured and operate as open
-redirectors. An open redirector is an endpoint using a parameter to
-automatically redirect a user-agent to the location specified by the
-parameter value without any validation.
+권한 부여 서버, 권한 부여 Endpoint 및 클라이언트 리디렉션 Endpoint가 잘못 구성되어 개방형 리디렉터로 작동 할 수 있습니다. 개방형 리디렉터는 매개 변수를 사용하여 유효성 검사없이 사용자 에이전트를 매개 변수 값에 지정된 위치로 자동 리디렉션하는 엔드 포인트입니다.
 
-Open redirectors can be used in phishing attacks, or by an attacker
-to get end-users to visit malicious sites by using the URI authority
-component of a familiar and trusted destination. In addition, if the
-authorization server allows the client to register only part of the
-redirection URI, an attacker can use an open redirector operated by
+오픈 리디렉터는 피싱 공격에 사용되거나 공격자가 익숙하고 신뢰할 수있는 대상의 URI 기관 구성 요소를 사용하여 최종 사용자가 악성 사이트를 방문하도록 유도 할 수 있습니다. 또한 권한 부여 서버가 클라이언트가 리디렉션 URI의 일부만 등록하도록 허용하는 경우 공격자는 다음에서 운영하는 개방형 리디렉터를 사용할 수 있습니다.
 
-the client to construct a redirection URI that will pass the
-authorization server validation but will send the authorization code
-or access token to an endpoint under the control of the attacker.
+클라이언트는 권한 부여 서버 유효성 검사를 통과하지만 공격자가 제어하는 ​​Endpoint에 권한 부여 코드 또는 액세스 토큰을 보내는 리디렉션 URI를 구성합니다.
 
-### 10.16. Misuse of Access Token to Impersonate Resource Owner in Implicit Flow
+### 10.16. 암시적 흐름에서 리소스 소유자로 가장하기위한 액세스 토큰의 오용
 
-For public clients using implicit flows, this specification does not
-provide any method for the client to determine what client an access
-token was issued to.
+암시적 흐름을 사용하는 공용 클라이언트의 경우 이 사양은 클라이언트가 액세스 토큰이 발급 된 클라이언트를 확인할 수있는 방법을 제공하지 않습니다.
 
-A resource owner may willingly delegate access to a resource by
-granting an access token to an attacker's malicious client. This may
-be due to phishing or some other pretext. An attacker may also steal
-a token via some other mechanism. An attacker may then attempt to
-impersonate the resource owner by providing the access token to a
-legitimate public client.
+리소스 소유자는 공격자의 악의적인 클라이언트에 액세스 토큰을 부여하여 리소스에 대한 액세스 권한을 기꺼이 위임 할 수 있습니다. 이것은 피싱이나 다른 구실 때문일 수 있습니다. 공격자는 다른 메커니즘을 통해 토큰을 훔칠 수도 있습니다. 그런 다음 공격자는 합법적인 공용 클라이언트에 액세스 토큰을 제공하여 리소스 소유자를 가장하려고 할 수 있습니다.
 
-In the implicit flow (response_type=token), the attacker can easily
-switch the token in the response from the authorization server,
-replacing the real access token with the one previously issued to the
-attacker.
+암시적 흐름 (response_type = token)에서 공격자는 인증 서버의 응답에서 토큰을 쉽게 전환하여 실제 액세스 토큰을 공격자에게 이전에 발급 한 토큰으로 대체 할 수 있습니다.
 
-Servers communicating with native applications that rely on being
-passed an access token in the back channel to identify the user of
-the client may be similarly compromised by an attacker creating a
-compromised application that can inject arbitrary stolen access
-tokens.
+클라이언트 사용자를 식별하기 위해 백 채널에서 액세스 토큰이 전달되는 데 의존하는 네이티브 애플리케이션과 통신하는 서버는 임의의 도난 된 액세스 토큰을 삽입 할 수있는 손상된 애플리케이션을 만드는 공격자에 의해 유사하게 손상 될 수 있습니다.
 
-Any public client that makes the assumption that only the resource
-owner can present it with a valid access token for the resource is
-vulnerable to this type of attack.
+리소스 소유자만 리소스에 대한 유효한 액세스 토큰을 제공 할 수 있다고 가정하는 모든 공용 클라이언트는 이러한 유형의 공격에 취약합니다.
 
-This type of attack may expose information about the resource owner
-at the legitimate client to the attacker (malicious client). This
-will also allow the attacker to perform operations at the legitimate
-client with the same permissions as the resource owner who originally
-granted the access token or authorization code.
+이러한 유형의 공격은 합법적인 클라이언트의 리소스 소유자에 대한 정보를 공격자 (악성 클라이언트)에게 노출 할 수 있습니다. 이렇게하면 공격자는 원래 액세스 토큰 또는 인증 코드를 부여한 리소스 소유자와 동일한 권한으로 합법적인 클라이언트에서 작업을 수행 할 수 있습니다.
 
-Authenticating resource owners to clients is out of scope for this
-specification. Any specification that uses the authorization process
-as a form of delegated end-user authentication to the client (e.g.,
-third-party sign-in service) MUST NOT use the implicit flow without
-additional security mechanisms that would enable the client to
-determine if the access token was issued for its use (e.g., audience-
-restricting the access token).
+클라이언트에 대한 리소스 소유자 인증은 이 사양의 범위를 벗어납니다. 권한 부여 프로세스를 클라이언트에 위임 된 최종 사용자 인증의 형식으로 사용하는 모든 사양 (예 : 타사 로그인 서비스)은 클라이언트가 액세스 권한을 결정할 수 있도록하는 추가 보안 메커니즘(예 : 액세스 토큰을 대상으로 제한) 없이 암시적 흐름을 사용해서는 안됩니다.
 
 ## 11. IANA Considerations
 
@@ -2031,369 +1627,245 @@ restricting the access token).
 
 This specification establishes the OAuth Access Token Types registry.
 
-Access token types are registered with a Specification Required
-([[RFC5226](https://tools.ietf.org/html/rfc5226)]) after a two-week review period on the
-oauth-ext-review@ietf.org mailing list, on the advice of one or more
-Designated Experts. However, to allow for the allocation of values
-prior to publication, the Designated Expert(s) may approve
-registration once they are satisfied that such a specification will
-be published.
+Access token types are registered with a Specification Required ([[RFC5226](https://tools.ietf.org/html/rfc5226)]) after a two-week review period on the oauth-ext-review@ietf.org mailing list, on the advice of one or more Designated Experts. However, to allow for the allocation of values prior to publication, the Designated Expert(s) may approve registration once they are satisfied that such a specification will be published.
 
-Registration requests must be sent to the oauth-ext-review@ietf.org
-mailing list for review and comment, with an appropriate subject
-(e.g., "Request for access token type: example").
+Registration requests must be sent to the oauth-ext-review@ietf.org mailing list for review and comment, with an appropriate subject (e.g., "Request for access token type: example").
 
-Within the review period, the Designated Expert(s) will either
-approve or deny the registration request, communicating this decision
-to the review list and IANA. Denials should include an explanation
-and, if applicable, suggestions as to how to make the request
-successful.
+Within the review period, the Designated Expert(s) will either approve or deny the registration request, communicating this decision to the review list and IANA. Denials should include an explanation and, if applicable, suggestions as to how to make the request successful.
 
-IANA must only accept registry updates from the Designated Expert(s)
-and should direct all requests for registration to the review mailing
-list.
+IANA must only accept registry updates from the Designated Expert(s) and should direct all requests for registration to the review mailing list.
 
 #### 11.1.1. Registration Template
 
-Type name:
+Type name:  
 The name requested (e.g., "example").
 
-Additional Token Endpoint Response Parameters:
-Additional response parameters returned together with the
-"access_token" parameter. New parameters MUST be separately
-registered in the OAuth Parameters registry as described by
-[Section 11.2](#112-OAuth-Parameters-Registry).
+Additional Token Endpoint Response Parameters:  
+Additional response parameters returned together with the "access_token" parameter. New parameters MUST be separately registered in the OAuth Parameters registry as described by [Section 11.2](#112-OAuth-Parameters-Registry).
 
-HTTP Authentication Scheme(s):
-The HTTP authentication scheme name(s), if any, used to
-authenticate protected resource requests using access tokens of
-this type.
+HTTP Authentication Scheme(s):  
+The HTTP authentication scheme name(s), if any, used to authenticate protected resource requests using access tokens of this type.
 
-Change controller:
-For Standards Track RFCs, state "IETF". For others, give the name
-of the responsible party. Other details (e.g., postal address,
-email address, home page URI) may also be included.
+Change controller:  
+For Standards Track RFCs, state "IETF". For others, give the name of the responsible party. Other details (e.g., postal address, email address, home page URI) may also be included.
 
-Specification document(s):
-Reference to the document(s) that specify the parameter,
-preferably including a URI that can be used to retrieve a copy of
-the document(s). An indication of the relevant sections may also
-be included but is not required.
+Specification document(s):  
+Reference to the document(s) that specify the parameter, preferably including a URI that can be used to retrieve a copy of the document(s). An indication of the relevant sections may also be included but is not required.
 
 ### 11.2. OAuth Parameters Registry
 
 This specification establishes the OAuth Parameters registry.
 
-Additional parameters for inclusion in the authorization endpoint
-request, the authorization endpoint response, the token endpoint
-request, or the token endpoint response are registered with a
-Specification Required ([[RFC5226](https://tools.ietf.org/html/rfc5226)]) after a two-week review period on
-the oauth-ext-review@ietf.org mailing list, on the advice of one or
-more Designated Experts. However, to allow for the allocation of
-values prior to publication, the Designated Expert(s) may approve
-registration once they are satisfied that such a specification will
-be published.
+Additional parameters for inclusion in the authorization endpoint request, the authorization endpoint response, the token endpoint request, or the token endpoint response are registered with a Specification Required ([[RFC5226](https://tools.ietf.org/html/rfc5226)]) after a two-week review period on the oauth-ext-review@ietf.org mailing list, on the advice of one or more Designated Experts. However, to allow for the allocation of values prior to publication, the Designated Expert(s) may approve registration once they are satisfied that such a specification will be published.
 
-Registration requests must be sent to the oauth-ext-review@ietf.org
-mailing list for review and comment, with an appropriate subject
-(e.g., "Request for parameter: example").
+Registration requests must be sent to the oauth-ext-review@ietf.org mailing list for review and comment, with an appropriate subject (e.g., "Request for parameter: example").
 
-Within the review period, the Designated Expert(s) will either
-approve or deny the registration request, communicating this decision
-to the review list and IANA. Denials should include an explanation
-and, if applicable, suggestions as to how to make the request
-successful.
+Within the review period, the Designated Expert(s) will either approve or deny the registration request, communicating this decision to the review list and IANA. Denials should include an explanation and, if applicable, suggestions as to how to make the request successful.
 
-IANA must only accept registry updates from the Designated Expert(s)
-and should direct all requests for registration to the review mailing
-list.
+IANA must only accept registry updates from the Designated Expert(s) and should direct all requests for registration to the review mailing list.
 
 #### 11.2.1. Registration Template
 
-Parameter name:
+Parameter name:  
 The name requested (e.g., "example").
 
-Parameter usage location:
-The location(s) where parameter can be used. The possible
-locations are authorization request, authorization response, token
-request, or token response.
+Parameter usage location:  
+The location(s) where parameter can be used. The possible locations are authorization request, authorization response, token request, or token response.
 
-Change controller:
-For Standards Track RFCs, state "IETF". For others, give the name
-of the responsible party. Other details (e.g., postal address,
-email address, home page URI) may also be included.
+Change controller:  
+For Standards Track RFCs, state "IETF". For others, give the name of the responsible party. Other details (e.g., postal address, email address, home page URI) may also be included.
 
-Specification document(s):
-Reference to the document(s) that specify the parameter,
-preferably including a URI that can be used to retrieve a copy of
-the document(s). An indication of the relevant sections may also
-be included but is not required.
+Specification document(s):  
+Reference to the document(s) that specify the parameter, preferably including a URI that can be used to retrieve a copy of the document(s). An indication of the relevant sections may also be included but is not required.
 
 #### 11.2.2. Initial Registry Contents
 
 The OAuth Parameters registry's initial contents are:
 
-o Parameter name: client_id
-o Parameter usage location: authorization request, token request
-o Change controller: IETF
+o Parameter name: client_id  
+o Parameter usage location: authorization request, token request  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: client_secret
-o Parameter usage location: token request
-o Change controller: IETF
+o Parameter name: client_secret  
+o Parameter usage location: token request  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: response_type
-o Parameter usage location: authorization request
-o Change controller: IETF
+o Parameter name: response_type  
+o Parameter usage location: authorization request  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: redirect_uri
-o Parameter usage location: authorization request, token request
-o Change controller: IETF
+o Parameter name: redirect_uri  
+o Parameter usage location: authorization request, token request  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: scope
+o Parameter name: scope  
 o Parameter usage location: authorization request, authorization
-response, token request, token response
-o Change controller: IETF
+response, token request, token response  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: state
+o Parameter name: state  
 o Parameter usage location: authorization request, authorization
-response
-o Change controller: IETF
+response  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: code
-o Parameter usage location: authorization response, token request
-o Change controller: IETF
+o Parameter name: code  
+o Parameter usage location: authorization response, token request  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: error_description
-o Parameter usage location: authorization response, token response
-o Change controller: IETF
+o Parameter name: error_description  
+o Parameter usage location: authorization response, token response  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: error_uri
-o Parameter usage location: authorization response, token response
-o Change controller: IETF
+o Parameter name: error_uri  
+o Parameter usage location: authorization response, token response  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: grant_type
-o Parameter usage location: token request
-o Change controller: IETF
+o Parameter name: grant_type  
+o Parameter usage location: token request  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: access_token
-o Parameter usage location: authorization response, token response
-o Change controller: IETF
+o Parameter name: access_token  
+o Parameter usage location: authorization response, token response  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: token_type
-o Parameter usage location: authorization response, token response
-o Change controller: IETF
+o Parameter name: token_type  
+o Parameter usage location: authorization response, token response  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: expires_in
-o Parameter usage location: authorization response, token response
-o Change controller: IETF
+o Parameter name: expires_in  
+o Parameter usage location: authorization response, token response  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: username
-o Parameter usage location: token request
-o Change controller: IETF
+o Parameter name: username  
+o Parameter usage location: token request  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: password
-o Parameter usage location: token request
-o Change controller: IETF
+o Parameter name: password  
+o Parameter usage location: token request  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Parameter name: refresh_token
-o Parameter usage location: token request, token response
-o Change controller: IETF
+o Parameter name: refresh_token  
+o Parameter usage location: token request, token response  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
 ### 11.3. OAuth Authorization Endpoint Response Types Registry
 
-This specification establishes the OAuth Authorization Endpoint
-Response Types registry.
+This specification establishes the OAuth Authorization Endpoint Response Types registry.
 
-Additional response types for use with the authorization endpoint are
-registered with a Specification Required ([[RFC5226](https://tools.ietf.org/html/rfc5226)]) after a two-week
-review period on the oauth-ext-review@ietf.org mailing list, on the
-advice of one or more Designated Experts. However, to allow for the
-allocation of values prior to publication, the Designated Expert(s)
-may approve registration once they are satisfied that such a
-specification will be published.
+Additional response types for use with the authorization endpoint are registered with a Specification Required ([[RFC5226](https://tools.ietf.org/html/rfc5226)]) after a two-week review period on the oauth-ext-review@ietf.org mailing list, on the advice of one or more Designated Experts. However, to allow for the allocation of values prior to publication, the Designated Expert(s) may approve registration once they are satisfied that such a specification will be published.
 
-Registration requests must be sent to the oauth-ext-review@ietf.org
-mailing list for review and comment, with an appropriate subject
-(e.g., "Request for response type: example").
+Registration requests must be sent to the oauth-ext-review@ietf.org mailing list for review and comment, with an appropriate subject (e.g., "Request for response type: example").
 
-Within the review period, the Designated Expert(s) will either
-approve or deny the registration request, communicating this decision
-to the review list and IANA. Denials should include an explanation
-and, if applicable, suggestions as to how to make the request
-successful.
+Within the review period, the Designated Expert(s) will either approve or deny the registration request, communicating this decision to the review list and IANA. Denials should include an explanation and, if applicable, suggestions as to how to make the request successful.
 
-IANA must only accept registry updates from the Designated Expert(s)
-and should direct all requests for registration to the review mailing
-list.
+IANA must only accept registry updates from the Designated Expert(s) and should direct all requests for registration to the review mailing list.
 
 #### 11.3.1. Registration Template
 
-Response type name:
+Response type name:  
 The name requested (e.g., "example").
 
-Change controller:
-For Standards Track RFCs, state "IETF". For others, give the name
-of the responsible party. Other details (e.g., postal address,
-email address, home page URI) may also be included.
+Change controller:  
+For Standards Track RFCs, state "IETF". For others, give the name of the responsible party. Other details (e.g., postal address, email address, home page URI) may also be included.
 
-Specification document(s):
-Reference to the document(s) that specify the type, preferably
-including a URI that can be used to retrieve a copy of the
-document(s). An indication of the relevant sections may also be
-included but is not required.
+Specification document(s):  
+Reference to the document(s) that specify the type, preferably including a URI that can be used to retrieve a copy of the document(s). An indication of the relevant sections may also be included but is not required.
 
 #### 11.3.2. Initial Registry Contents
 
-The OAuth Authorization Endpoint Response Types registry's initial
-contents are:
+The OAuth Authorization Endpoint Response Types registry's initial contents are:
 
-o Response type name: code
-o Change controller: IETF
+o Response type name: code  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
-o Response type name: token
-o Change controller: IETF
+o Response type name: token  
+o Change controller: IETF  
 o Specification document(s): [RFC 6749](https://tools.ietf.org/html/rfc6749)
 
 ### 11.4. OAuth Extensions Error Registry
 
 This specification establishes the OAuth Extensions Error registry.
 
-Additional error codes used together with other protocol extensions
-(i.e., extension grant types, access token types, or extension
-parameters) are registered with a Specification Required ([[RFC5226](https://tools.ietf.org/html/rfc5226)])
-after a two-week review period on the oauth-ext-review@ietf.org
-mailing list, on the advice of one or more Designated Experts.
-However, to allow for the allocation of values prior to publication,
-the Designated Expert(s) may approve registration once they are
-satisfied that such a specification will be published.
+Additional error codes used together with other protocol extensions (i.e., extension grant types, access token types, or extension parameters) are registered with a Specification Required ([[RFC5226](https://tools.ietf.org/html/rfc5226)]) after a two-week review period on the oauth-ext-review@ietf.org
+mailing list, on the advice of one or more Designated Experts. However, to allow for the allocation of values prior to publication, the Designated Expert(s) may approve registration once they are satisfied that such a specification will be published.
 
-Registration requests must be sent to the oauth-ext-review@ietf.org
-mailing list for review and comment, with an appropriate subject
-(e.g., "Request for error code: example").
+Registration requests must be sent to the oauth-ext-review@ietf.org mailing list for review and comment, with an appropriate subject (e.g., "Request for error code: example").
 
-Within the review period, the Designated Expert(s) will either
-approve or deny the registration request, communicating this decision
-to the review list and IANA. Denials should include an explanation
-and, if applicable, suggestions as to how to make the request
-successful.
+Within the review period, the Designated Expert(s) will either approve or deny the registration request, communicating this decision to the review list and IANA. Denials should include an explanation and, if applicable, suggestions as to how to make the request successful.
 
-IANA must only accept registry updates from the Designated Expert(s)
-and should direct all requests for registration to the review mailing
-list.
+IANA must only accept registry updates from the Designated Expert(s) and should direct all requests for registration to the review mailing list.
 
 #### 11.4.1. Registration Template
 
-Error name:
-The name requested (e.g., "example"). Values for the error name
-MUST NOT include characters outside the set %x20-21 / %x23-5B /
-%x5D-7E.
+Error name:  
+The name requested (e.g., "example"). Values for the error name MUST NOT include characters outside the set %x20-21 / %x23-5B / %x5D-7E.
 
-Error usage location:
-The location(s) where the error can be used. The possible
-locations are authorization code grant error response
-([Section 4.1.2.1](#4.1.2.1.-Error-Response)), implicit grant error response
-([Section 4.2.2.1](#4.2.2.1.-Error-Response)), token error response ([Section 5.2](#52-Error-Response)), or resource
-access error response ([Section 7.2](#72-Error-Response)).
+Error usage location:  
+The location(s) where the error can be used. The possible locations are authorization code grant error response ([Section 4.1.2.1](#4221-오류-응답)), implicit grant error response ([Section 4.2.2.1](#4221-오류-응답)), token error response ([Section 5.2](#52-오류-응답)), or resource access error response ([Section 7.2](#72-오류-응답)).
 
-Related protocol extension:
-The name of the extension grant type, access token type, or
-extension parameter that the error code is used in conjunction
-with.
+Related protocol extension:  
+The name of the extension grant type, access token type, or extension parameter that the error code is used in conjunction with.
 
-Change controller:
-For Standards Track RFCs, state "IETF". For others, give the name
-of the responsible party. Other details (e.g., postal address,
-email address, home page URI) may also be included.
+Change controller:  
+For Standards Track RFCs, state "IETF". For others, give the name of the responsible party. Other details (e.g., postal address, email address, home page URI) may also be included.
 
-Specification document(s):
-Reference to the document(s) that specify the error code,
-preferably including a URI that can be used to retrieve a copy of
-the document(s). An indication of the relevant sections may also
-be included but is not required.
+Specification document(s):  
+Reference to the document(s) that specify the error code, preferably including a URI that can be used to retrieve a copy of the document(s). An indication of the relevant sections may also be included but is not required.
 
 ## 12. References
 
 ### 12.1. Normative References
 
-[RFC2119] Bradner, S., "Key words for use in RFCs to Indicate
-Requirement Levels", BCP 14, RFC 2119, March 1997.
+[RFC2119] Bradner, S., "Key words for use in RFCs to Indicate Requirement Levels", BCP 14, RFC 2119, March 1997.
 
-[RFC2246] Dierks, T. and C. Allen, "The TLS Protocol Version 1.0",
-RFC 2246, January 1999.
+[RFC2246] Dierks, T. and C. Allen, "The TLS Protocol Version 1.0", RFC 2246, January 1999.
 
-[RFC2616] Fielding, R., Gettys, J., Mogul, J., Frystyk, H.,
-Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext
-Transfer Protocol -- HTTP/1.1", RFC 2616, June 1999.
+[RFC2616] Fielding, R., Gettys, J., Mogul, J., Frystyk, H., Masinter, L., Leach, P., and T. Berners-Lee, "Hypertext Transfer Protocol -- HTTP/1.1", RFC 2616, June 1999.
 
-[RFC2617] Franks, J., Hallam-Baker, P., Hostetler, J., Lawrence, S.,
-Leach, P., Luotonen, A., and L. Stewart, "HTTP
-Authentication: Basic and Digest Access Authentication",
-RFC 2617, June 1999.
+[RFC2617] Franks, J., Hallam-Baker, P., Hostetler, J., Lawrence, S., Leach, P., Luotonen, A., and L. Stewart, "HTTP Authentication: Basic and Digest Access Authentication", RFC 2617, June 1999.
 
 [RFC2818] Rescorla, E., "HTTP Over TLS", RFC 2818, May 2000.
 
-[RFC3629] Yergeau, F., "UTF-8, a transformation format of
-ISO 10646", STD 63, RFC 3629, November 2003.
+[RFC3629] Yergeau, F., "UTF-8, a transformation format of ISO 10646", STD 63, RFC 3629, November 2003.
 
-[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
-Resource Identifier (URI): Generic Syntax", STD 66,
-RFC 3986, January 2005.
+[RFC3986] Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform Resource Identifier (URI): Generic Syntax", STD 66, RFC 3986, January 2005.
 
-[RFC4627] Crockford, D., "The application/json Media Type for
-JavaScript Object Notation (JSON)", RFC 4627, July 2006.
+[RFC4627] Crockford, D., "The application/json Media Type for JavaScript Object Notation (JSON)", RFC 4627, July 2006.
 
-[RFC4949] Shirey, R., "Internet Security Glossary, Version 2",
-RFC 4949, August 2007.
+[RFC4949] Shirey, R., "Internet Security Glossary, Version 2", RFC 4949, August 2007.
 
-[RFC5226] Narten, T. and H. Alvestrand, "Guidelines for Writing an
-IANA Considerations Section in RFCs", BCP 26, RFC 5226,
-May 2008.
+[RFC5226] Narten, T. and H. Alvestrand, "Guidelines for Writing an IANA Considerations Section in RFCs", BCP 26, RFC 5226, May 2008.
 
-[RFC5234] Crocker, D. and P. Overell, "Augmented BNF for Syntax
-Specifications: ABNF", STD 68, RFC 5234, January 2008.
+[RFC5234] Crocker, D. and P. Overell, "Augmented BNF for Syntax Specifications: ABNF", STD 68, RFC 5234, January 2008.
 
-[RFC5246] Dierks, T. and E. Rescorla, "The Transport Layer Security
-(TLS) Protocol Version 1.2", RFC 5246, August 2008.
+[RFC5246] Dierks, T. and E. Rescorla, "The Transport Layer Security (TLS) Protocol Version 1.2", RFC 5246, August 2008.
 
-[RFC6125] Saint-Andre, P. and J. Hodges, "Representation and
-Verification of Domain-Based Application Service Identity
-within Internet Public Key Infrastructure Using X.509
-(PKIX) Certificates in the Context of Transport Layer
-Security (TLS)", RFC 6125, March 2011.
+[RFC6125] Saint-Andre, P. and J. Hodges, "Representation and Verification of Domain-Based Application Service Identity within Internet Public Key Infrastructure Using X.509 (PKIX) Certificates in the Context of Transport Layer Security (TLS)", RFC 6125, March 2011.
 
-[USASCII] American National Standards Institute, "Coded Character
-Set -- 7-bit American Standard Code for Information
-Interchange", ANSI X3.4, 1986.
+[USASCII] American National Standards Institute, "Coded Character Set -- 7-bit American Standard Code for Information Interchange", ANSI X3.4, 1986.
 
 [W3C.REC-html401-19991224]
-Raggett, D., Le Hors, A., and I. Jacobs, "HTML 4.01
-Specification", World Wide Web Consortium
-Recommendation REC-html401-19991224, December 1999,
-<http://www.w3.org/TR/1999/REC-html401-19991224>.
+Raggett, D., Le Hors, A., and I. Jacobs, "HTML 4.01 Specification", World Wide Web Consortium Recommendation REC-html401-19991224, December 1999, <http://www.w3.org/TR/1999/REC-html401-19991224>.
 
 [W3C.REC-xml-20081126]
-Bray, T., Paoli, J., Sperberg-McQueen, C., Maler, E.,
-and F. Yergeau, "Extensible Markup Language (XML) 1.0
-(Fifth Edition)", World Wide Web Consortium
-Recommendation REC-xml-20081126, November 2008,
-<http://www.w3.org/TR/2008/REC-xml-20081126>.
+Bray, T., Paoli, J., Sperberg-McQueen, C., Maler, E., and F. Yergeau, "Extensible Markup Language (XML) 1.0 (Fifth Edition)", World Wide Web Consortium Recommendation REC-xml-20081126, November 2008, <http://www.w3.org/TR/2008/REC-xml-20081126>.
 
 Hardt Standards Track [Page 69]
 
@@ -2401,26 +1873,15 @@ RFC 6749 OAuth 2.0 October 2012
 
 ### 12.2. Informative References
 
-[OAuth-HTTP-MAC]
-Hammer-Lahav, E., Ed., "HTTP Authentication: MAC Access
-Authentication", Work in Progress, February 2012.
+[OAuth-HTTP-MAC] Hammer-Lahav, E., Ed., "HTTP Authentication: MAC Access Authentication", Work in Progress, February 2012.
 
-[OAuth-SAML2]
-Campbell, B. and C. Mortimore, "SAML 2.0 Bearer Assertion
-Profiles for OAuth 2.0", Work in Progress, September 2012.
+[OAuth-SAML2] Campbell, B. and C. Mortimore, "SAML 2.0 Bearer Assertion Profiles for OAuth 2.0", Work in Progress, September 2012.
 
-[OAuth-THREATMODEL]
-Lodderstedt, T., Ed., McGloin, M., and P. Hunt, "OAuth 2.0
-Threat Model and Security Considerations", Work
-in Progress, October 2012.
+[OAuth-THREATMODEL] Lodderstedt, T., Ed., McGloin, M., and P. Hunt, "OAuth 2.0 Threat Model and Security Considerations", Work in Progress, October 2012.
 
-[OAuth-WRAP]
-Hardt, D., Ed., Tom, A., Eaton, B., and Y. Goland, "OAuth
-Web Resource Authorization Profiles", Work in Progress,
-January 2010.
+[OAuth-WRAP] Hardt, D., Ed., Tom, A., Eaton, B., and Y. Goland, "OAuth Web Resource Authorization Profiles", Work in Progress, January 2010.
 
-[RFC5849] Hammer-Lahav, E., "The OAuth 1.0 Protocol", RFC 5849,
-April 2010.
+[RFC5849] Hammer-Lahav, E., "The OAuth 1.0 Protocol", RFC 5849, April 2010.
 
 [RFC6750] Jones, M. and D. Hardt, "The OAuth 2.0 Authorization
 Framework: Bearer Token Usage", RFC 6750, October 2012.
@@ -2431,14 +1892,9 @@ RFC 6749 OAuth 2.0 October 2012
 
 # Appendix A. Augmented Backus-Naur Form (ABNF) Syntax
 
-This section provides Augmented Backus-Naur Form (ABNF) syntax
-descriptions for the elements defined in this specification using the
-notation of [RFC5234]. The ABNF below is defined in terms of Unicode
-code points [W3C.REC-xml-20081126]; these characters are typically
-encoded in UTF-8. Elements are presented in the order first defined.
+This section provides Augmented Backus-Naur Form (ABNF) syntax descriptions for the elements defined in this specification using the notation of [RFC5234]. The ABNF below is defined in terms of Unicode code points [W3C.REC-xml-20081126]; these characters are typically encoded in UTF-8. Elements are presented in the order first defined.
 
-Some of the definitions that follow use the "URI-reference"
-definition from [RFC3986].
+Some of the definitions that follow use the "URI-reference" definition from [RFC3986].
 
 Some of the definitions that follow use these common definitions:
 
@@ -2448,9 +1904,7 @@ Some of the definitions that follow use these common definitions:
      UNICODECHARNOCRLF = %x09 /%x20-7E / %x80-D7FF /
                          %xE000-FFFD / %x10000-10FFFF
 
-(The UNICODECHARNOCRLF definition is based upon the Char definition
-in Section 2.2 of [W3C.REC-xml-20081126], but omitting the Carriage
-Return and Linefeed characters.)
+(The UNICODECHARNOCRLF definition is based upon the Char definition in Section 2.2 of [W3C.REC-xml-20081126], but omitting the Carriage Return and Linefeed characters.)
 
 ## A.1. "client_id" Syntax
 
@@ -2485,36 +1939,31 @@ The "scope" element is defined in Section 3.3:
 
 ## A.5. "state" Syntax
 
-The "state" element is defined in Sections 4.1.1, 4.1.2, 4.1.2.1,
-4.2.1, 4.2.2, and 4.2.2.1:
+The "state" element is defined in Sections 4.1.1, 4.1.2, 4.1.2.1, 4.2.1, 4.2.2, and 4.2.2.1:
 
      state      = 1*VSCHAR
 
 ## A.6. "redirect_uri" Syntax
 
-The "redirect_uri" element is defined in Sections 4.1.1, 4.1.3,
-and 4.2.1:
+The "redirect_uri" element is defined in Sections 4.1.1, 4.1.3, and 4.2.1:
 
      redirect-uri      = URI-reference
 
 ## A.7. "error" Syntax
 
-The "error" element is defined in Sections 4.1.2.1, 4.2.2.1, 5.2,
-7.2, and 8.5:
+The "error" element is defined in Sections 4.1.2.1, 4.2.2.1, 5.2, 7.2, and 8.5:
 
      error             = 1*NQSCHAR
 
 ## A.8. "error_description" Syntax
 
-The "error_description" element is defined in Sections 4.1.2.1,
-4.2.2.1, 5.2, and 7.2:
+The "error_description" element is defined in Sections 4.1.2.1, 4.2.2.1, 5.2, and 7.2:
 
      error-description = 1*NQSCHAR
 
 ## A.9. "error_uri" Syntax
 
-The "error_uri" element is defined in Sections 4.1.2.1, 4.2.2.1, 5.2,
-and 7.2:
+The "error_uri" element is defined in Sections 4.1.2.1, 4.2.2.1, 5.2, and 7.2:
 
      error-uri         = URI-reference
 
@@ -2524,8 +1973,7 @@ RFC 6749 OAuth 2.0 October 2012
 
 ## A.10. "grant_type" Syntax
 
-The "grant_type" element is defined in Sections 4.1.3, 4.3.2, 4.4.2,
-4.5, and 6:
+The "grant_type" element is defined in Sections 4.1.3, 4.3.2, 4.4.2, 4.5, and 6:
 
      grant-type = grant-name / URI-reference
      grant-name = 1*name-char
@@ -2588,29 +2036,16 @@ The syntax for new endpoint parameters is defined in Section 8.2:
 
 # Appendix B. Use of application/x-www-form-urlencoded Media Type
 
-At the time of publication of this specification, the
-"application/x-www-form-urlencoded" media type was defined in
-Section 17.13.4 of [W3C.REC-html401-19991224] but not registered in
-the IANA MIME Media Types registry
-(<http://www.iana.org/assignments/media-types>). Furthermore, that
-definition is incomplete, as it does not consider non-US-ASCII
-characters.
+At the time of publication of this specification, the "application/x-www-form-urlencoded" media type was defined in Section 17.13.4 of [W3C.REC-html401-19991224] but not registered in the IANA MIME Media Types registry (<http://www.iana.org/assignments/media-types>). Furthermore, that definition is incomplete, as it does not consider non-US-ASCII characters.
 
-To address this shortcoming when generating payloads using this media
-type, names and values MUST be encoded using the UTF-8 character
-encoding scheme [RFC3629] first; the resulting octet sequence then
-needs to be further encoded using the escaping rules defined in
-[W3C.REC-html401-19991224].
+To address this shortcoming when generating payloads using this media type, names and values MUST be encoded using the UTF-8 character encoding scheme [RFC3629] first; the resulting octet sequence then needs to be further encoded using the escaping rules defined in [W3C.REC-html401-19991224].
 
-When parsing data from a payload using this media type, the names and
-values resulting from reversing the name/value encoding consequently
-need to be treated as octet sequences, to be decoded using the UTF-8
-character encoding scheme.
+When parsing data from a payload using this media type, the names and values resulting from reversing the name/value encoding consequently need to be treated as octet sequences, to be decoded using the UTF-8 character encoding scheme.
 
-For example, the value consisting of the six Unicode code points
-(1) U+0020 (SPACE), (2) U+0025 (PERCENT SIGN),
-(3) U+0026 (AMPERSAND), (4) U+002B (PLUS SIGN),
-(5) U+00A3 (POUND SIGN), and (6) U+20AC (EURO SIGN) would be encoded
+For example, the value consisting of the six Unicode code points  
+(1) U+0020 (SPACE), (2) U+0025 (PERCENT SIGN),  
+(3) U+0026 (AMPERSAND), (4) U+002B (PLUS SIGN),  
+(5) U+00A3 (POUND SIGN), and (6) U+20AC (EURO SIGN) would be encoded  
 into the octet sequence below (using hexadecimal notation):
 
      20 25 26 2B C2 A3 E2 82 AC
