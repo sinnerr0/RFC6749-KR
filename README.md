@@ -1,6 +1,6 @@
 # RFC6749
 
-IETF(국제 표준화 기구)의 RFC 6740(The OAuth 2.0 Authorization Framework)을 공부하기 위함
+IETF(국제 표준화 기구)의 RFC 6749(The OAuth 2.0 Authorization Framework) 공부하기 위함
 
 # The OAuth 2.0 Authorization Framework
 
